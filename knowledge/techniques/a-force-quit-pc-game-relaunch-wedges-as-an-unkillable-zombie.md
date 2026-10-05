@@ -25,10 +25,10 @@ more than a handful of launches, read this first so you don't lose time rediscov
 - **Symptom.** The game process starts but never gets a window; the mod's own log freezes partway
   through init (here: during address/pattern resolution, *before any hook installed* — which is the
   tell that it is not your mod). Task Manager shows **one thread** and no window.
-- **Confirm it's a zombie.** Try to kill it by exact PID. `Stop-Process`, `taskkill /F /PID <pid> /T`,
+- **Confirm it's a zombie.** Try to kill it by exact PID. `Stop-Process -Id <pid>`, `taskkill /F /PID <pid>`,
   and `um win kill <pid>` all fail with a variant of "There is no running instance of the task." A
   child launcher process *may* die, but the game PID persists.
-- **Recover.** A reboot clears it. There is no in-session fix once it is wedged.
+- **Recover.** A reboot clears it: ask the human to reboot. There is no in-session fix once it is wedged.
 - **Prevent (the useful part).**
   - **Quit the game cleanly to the desktop** (in-game Quit / Exit), never Alt+F4 or a task kill.
   - **Wait for the process to disappear completely**, and for the launcher (Steam / Ubisoft Connect)
@@ -36,7 +36,7 @@ more than a handful of launches, read this first so you don't lose time rediscov
   - **Assume one launch per boot.** Batch your tests: make a single launch answer as many questions
     as possible, and log the discovery data *before* any risky action so a crash still leaves you
     with the reading.
-  - **Remove D3D overlay hooks** first (ReShade `dxgi.dll`, Bandicam, Fraps): they can wedge the game
+  - **Ask the human before removing D3D overlay hooks** (ReShade `dxgi.dll`, Bandicam, Fraps): they can wedge the game
     at `D3D11CreateDeviceAndSwapChain` independently.
   - **Clear stale crash reporters** (BugSplat and friends) by PID — a stuck reporter makes Steam
     refuse to relaunch.
@@ -46,9 +46,9 @@ more than a handful of launches, read this first so you don't lose time rediscov
 ## Gotchas
 1. **"It crashed."** It usually didn't — it wedged. **Cause:** early-init block (launcher handshake
    or D3D device creation). **Fix:** check for the one-thread windowless process; if present and
-   unkillable, reboot. Don't chase it in the mod code.
-2. **`taskkill /F /T` kills the child, not the game.** **Cause:** the zombie has no killable thread.
-   **Fix:** don't keep hammering it; reboot.
+   unkillable, ask the human to reboot. Don't chase it in the mod code.
+2. **`taskkill /F /PID <pid>` kills the launcher child, not the game.** **Cause:** the zombie has no killable thread.
+   **Fix:** don't keep hammering it; ask the human to reboot.
 3. **The mod's log stops mid-init.** **Cause:** the plugin init runs on a game thread; if the game is
    blocked before the window exists, the plugin can't finish. **Fix:** recognise the freeze *point*
    (before any hook installs) as the signature of an environment wedge, not a mod bug.
@@ -59,4 +59,3 @@ more than a handful of launches, read this first so you don't lose time rediscov
 
 ## Seen in
 - games/assassin-s-creed-rogue/anvilnext-internals-for-ac-rogue-co-op-player-transform-the-.md
-- games/dishonored-rs (same Steam-launch tolerance), per the working folder's notes.
