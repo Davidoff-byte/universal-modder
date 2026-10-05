@@ -92,7 +92,7 @@ There is no single "install this and mod everything". Choose per goal:
 4. **AnvilToolkit XML is a sidecar.** Editing only the exported `.xml` does nothing — the game reads
    the **binary** resource. Repack the `.data` then the forge, with the game closed, and diff bytes.
 5. **AC1 is a trap for feature work.** No MP, no framework, tiny community — expect to build tooling
-   from scratch. See the `ac1-tools` skill.
+   from scratch.
 6. **Don't index the Black Flag *Resynced* (remaster) repos here** — kept out deliberately.
 
 ## Assets
