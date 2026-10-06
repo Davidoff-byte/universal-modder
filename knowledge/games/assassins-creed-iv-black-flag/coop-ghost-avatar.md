@@ -94,7 +94,16 @@ yaw by rewriting matrix rows 0/1 as a Z-rotation from the peer's quaternion.
 - **Oracle 3 (eye-witness):** a scripted fake peer circled the real player's position; an
   NPC visibly teleported in and walked the circle, and was released (walked off) when packets
   stopped ("yup he's circling"). Loop counter: 2,839/2,839 UDP packets both ways.
-- Not verified: two real machines over VPN (next), animations, and true model replacement.
+- **Oracle 4 (two machines, eye-witness, 2026-10-06):** real Radmin VPN run between two PCs
+  (~105 ms ping). Both players saw each other's driven crowd body in-game; log showed
+  `peer=1 body=1@<addr> fresh=1 d=13.8..18.9` with the body picked 61.5 m from the peer and
+  tracked while walking. Facing replica confirmed ("he turns to match") — validates the +Y
+  forward convention used for both placement and body yaw. Both sides hit a stuck UDP port
+  (bind 10048, a dead process owning it); changing LocalPort and mirroring RemotePort fixed it
+  live (the ini hot-reload re-binds without restart). Watch items: tracking slightly choppy
+  (20 Hz + latency + the crowd AI); peer climbs show as vertical teleports (no animation/parkour
+  linkage yet).
+- Not verified: animations/parkour events and true model replacement.
 
 ## Gotchas
 
@@ -140,4 +149,4 @@ picker, plugin write path, and a working loopback demo.
   engine but in `AC4BFMP.exe` (`CharacterSkinsComponent`, `ActionSwapSkin`, `HIJACK_SKIN`,
   morph events). Next step: port that apply-skin path, or call SP's graphic factory
   (table-registry driven) for a puppet with the protagonist's definition.
-- Two-machine link (Radmin VPN) and animation/parkour event replication are next.
+- Animation/parkour event replication is next (the two-machine link is done — see Oracle 4).
