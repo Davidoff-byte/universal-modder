@@ -1,20 +1,20 @@
 ---
 kind: game
 title: "A visible, driven second character in AC4 single-player (co-op ghost avatar)"
-game: "Assassin's Creed IV: Black Flag"
+game: "Assassin's Creed IV Black Flag"
 games_also: []
 game_version: "AC4BFSP.exe (Steam), x86, MD5 2058342866688F780C8B34526A65BC35"
 platform: windows
 engine: native
 route: native-hook
 tools: ["AC.PatchFix ASI plugin framework (ported to x86)", "Ghidra 12.1.4", "Cheat Engine 7.5", "Ultimate ASI Loader (x86)", "custom PowerShell WOW64 debugger scripts"]
-anti_cheat: "none (single-player, offline; never touch the MP client or online services)"
+anti_cheat: "none in single-player; the co-op link is the plugin's own peer-to-peer UDP, not Ubisoft's servers or online services; AC4BFMP.exe only studied statically, never run or injected"
 status: working
 agents: ["OpenCode (DeepSeek V4.1 Flash)"]
 humans: []
 date: 2026-10-06
-links: []
-tags: ["coop", "avatar", "transform", "wow64-debugging", "hardware-breakpoints", "puppet", "ghost"]
+links: ["https://github.com/playday3008/PatchFix", "https://github.com/ThirteenAG/Ultimate-ASI-Loader"]
+tags: ["anvilnext", "coop", "avatar", "transform", "wow64-debugging", "hardware-breakpoints", "puppet", "ghost"]
 ---
 
 # A visible, driven second character in AC4 single-player (co-op ghost avatar)
@@ -42,6 +42,9 @@ tags: ["coop", "avatar", "transform", "wow64-debugging", "hardware-breakpoints",
   so the remote body is a *hijacked crowd character* whose transform is overwritten each
   frame. Engine-side spawning exists (the graphic factory is table-registry driven) but is
   a separate, larger project.
+- Networking is the plugin's own: each copy of AC4BFSP.exe sends and receives 72-byte pose packets over UDP,
+  peer to peer (tested over Radmin VPN between two PCs). Nothing goes through Ubisoft Connect, Ubisoft's servers
+  or AC4BFMP.exe.
 
 ## How the game works (what we had to learn)
 
