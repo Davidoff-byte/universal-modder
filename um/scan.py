@@ -349,6 +349,8 @@ LOADERS = [
     ("Fabric/Forge profile", ("*fabric-loader*", "*neoforge*", "*forge-*.jar")),
     ("Steamodded (Balatro)", ("*steamodded*",)),
     ("Hollow Knight Modding API", ("*modding api*", "*/managed/mods/*")),
+    ("RE_Kenshi (Kenshi OGRE plugin)", ("re_kenshi.dll", "kenshilib.dll")),
+    ("Kenshi Mod Manager", ("kenshimodtool.exe",)),
 ]
 
 # folders whose exes/jars belong to installers and runtimes, not the game (matched with leading "_" stripped,
@@ -384,6 +386,7 @@ KNOWN = {
     "slay the spire": ("ModTheSpire + BaseMod (Java, SpirePatch)", "misc-engines.md"),
     "slay the spire 2": ("the game's own mod loader: C# .dll + Godot .pck + .json manifest in mods/; BaseLib (NuGet Alchyr.Sts2.BaseLib) for cards, relics and characters", "godot.md"),
     "balatro": ("Steamodded + lovely (Lua injection into the LÖVE game)", "misc-engines.md"),
+    "kenshi": ("FCS .mod data mods + asset overrides in mods/<name>/ mirroring data/ (load order in the launcher or KMM); code via RE_Kenshi + KenshiLib C++ plugins (VS2010 v100 x64, GPLv3, listed in the mod's RE_Kenshi.json) - the game exe is native, no CLR", "native.md"),
     "factorio": ("official Lua modding API (mods/ folder, data.lua + control.lua)", "misc-engines.md"),
     "counter-strike 2": ("Workshop maps / Source 2 tools; local -insecure only. VAC: never inject on official servers", "source.md"),
     "portal 2": ("VScript (Squirrel) + Puzzle Maker/Hammer, Workshop", "source.md"),
@@ -462,6 +465,10 @@ ENGINES = {
 
 
 # --------------------------------------------------------------------------- detection
+
+# exe basenames that mark a binary as an editor/tool, never the game itself
+# (matched against the lower-cased stem, e.g. "forgotten construction set")
+TOOL_EXE_RE = re.compile(r"construction.?set|\bfcs\b|mod.?tool|mod.?manager|\bkmm\b|launcher|editor|setup|installer")
 
 
 def detect(ix: Index) -> tuple[list[tuple[str, int, list[str], dict]], dict]:
@@ -560,16 +567,50 @@ def detect(ix: Index) -> tuple[list[tuple[str, int, list[str], dict]], dict]:
                    and not _in_skip_dir(f)),
                   key=lambda f: (f.count("/"), f))[:12]
     managed = []
+    sizes: dict[str, int] = {}
     for e in exes:
         info = pe_info(ix.path(e))
         if info:
             facts.setdefault("executables", {})[e] = info
             if info["managed"]:
                 managed.append(e)
+        try:
+            sizes[e] = ix.path(e).stat().st_size
+        except OSError:
+            pass
     if xna or ix.has("content/*.xnb"):
         add("xna-fna", 95, (xna or ["Content/*.xnb"])[:2] + managed[:1])
     elif managed or ix.find("*.runtimeconfig.json"):
-        add("dotnet", 70, (managed or ix.find("*.runtimeconfig.json"))[:2])
+        biggest_managed = max([sizes.get(m, 0) for m in managed] + [0])
+        # native candidates are non-tool binaries only: managers/bundles (e.g. Kenshi's
+        # 164 MB KMM) can dwarf the actual game exe, and when every native exe is
+        # tool-like (setup.exe, ...) there is no game binary to prefer
+        game_like = [e for e in exes if e not in managed and not TOOL_EXE_RE.search(Path(e).stem)]
+        big_native = sorted(
+            (e for e in game_like if sizes.get(e, 0) > biggest_managed),
+            key=lambda e: -sizes.get(e, 0),
+        )
+        # a .NET Core/5+ apphost is a native exe next to <stem>.dll with a sibling
+        # <stem>.runtimeconfig.json / <stem>.deps.json: the game is still .NET
+        apphost = bool(big_native) and any(
+            big_native[0][:-4] + ext in ix.files for ext in (".runtimeconfig.json", ".deps.json"))
+        if managed and big_native and not apphost and all(TOOL_EXE_RE.search(Path(e).stem) for e in managed):
+            # the only managed binaries are editors/tools (e.g. Kenshi's Forgotten
+            # Construction Set); the shipped game binary is native, so .NET routes
+            # (Harmony/BepInEx) do not apply to the game process
+            ogre = ix.find("*ogremain*.dll")[:2]
+            add("native", 65, big_native[:1] + ogre,
+                note=f"managed exe(s) look like tools ({', '.join(managed)}); game binary is native")
+        else:
+            add("dotnet", 70, (managed or ix.find("*.runtimeconfig.json"))[:2])
+
+    # OGRE (custom native engines, e.g. Kenshi): OgreMain + plugin config.
+    # Only a secondary signal here; the tool-exe demotion above (or a stronger
+    # engine hit) takes precedence when it fires.
+    if not any(h[0] == "native" for h in hits) and ix.has("*ogremain*.dll"):
+        plug = ix.find("plugins.cfg", "plugins_*.cfg")
+        add("native", 55, ix.find("*ogremain*.dll")[:2] + plug[:1],
+            **({"plugin_cfg": plug[0]} if plug else {}))
 
     # Source / Source 2
     if ix.has("*/gameinfo.gi") or ix.has("game/bin/win64/engine2.dll"):
