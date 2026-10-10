@@ -1123,7 +1123,9 @@
    "mixin",
    "reprojection",
    "camera-sync",
-   "director"
+   "director",
+   "prism-launcher",
+   "amd"
   ]
  },
  {
