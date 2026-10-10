@@ -235,6 +235,42 @@
   ]
  },
  {
+  "path": "games/assassins-creed-iv-black-flag/why-ac4-black-flag-sp-cannot-spawn-a-new-character-and-the-a.md",
+  "kind": "game",
+  "title": "Why AC4 Black Flag SP cannot spawn a new character, and the AnvilNext spawn system decoded",
+  "game": "Assassin's Creed IV: Black Flag",
+  "games_also": [
+   "Assassin's Creed Rogue"
+  ],
+  "game_version": "AC4BFSP.exe (Steam), x86, MD5 2058342866688F780C8B34526A65BC35 (fixed image base 0x400000, no ASLR)",
+  "platform": "windows",
+  "engine": "native",
+  "route": "native-hook",
+  "tools": [
+   "Ghidra 12.1.4 (headless + scripts)",
+   "Frida 17.23 (live hooks + memory dumps)",
+   "AC.PatchFix ASI plugin framework (x86)",
+   "gamedb (SQLite index over the Ghidra C dump)",
+   "Python (pefile + capstone) for a byte-level RVA oracle"
+  ],
+  "anti_cheat": "none (single-player, offline; the MP client is never touched)",
+  "status": "in-progress",
+  "agents": [
+   "OpenCode (DeepSeek V4.1)"
+  ],
+  "humans": [],
+  "date": "2026-10-10",
+  "links": [],
+  "tags": [
+   "coop",
+   "spawn",
+   "entity",
+   "anvilnext",
+   "reverse-engineering",
+   "dead-end"
+  ]
+ },
+ {
   "path": "games/baldur-s-gate-3/act-2-load-hang-one-bad-level-layer.md",
   "kind": "game",
   "title": "Act 2 never loads (hang at 50% or crash): one modded NPC on a bad level layer, found by bisecting a pak",
