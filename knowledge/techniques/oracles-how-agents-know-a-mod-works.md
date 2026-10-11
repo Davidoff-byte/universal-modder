@@ -43,9 +43,10 @@ Rules that make oracles work for agents:
 ## When correctness must be machine-checkable
 
 Some work is high-volume and repetitive enough that "is this right?" has to become a **PASS/FAIL the agent
-computes itself**, not a judgement call. Decompilation is the clearest case. A 2026 report decompiled a
-commercial FPS with autonomous agents (≈3 months; 14 cheap models + 2 strong at the end; 99% of the game's
-functions reconstructed, 83% byte-exact) and the decisive change was replacing an opinion with a check.
+computes itself**, not a judgement call. Decompilation is the clearest case. Maurice Heumann's 2026 report
+(linked at the end) decompiled a commercial FPS with autonomous agents (about 3 months; 14 cheaper Luna agents
+plus 2 Opus 5.5 agents at the end; 99% of the game's functions in the reconstructed source, 83% of all
+functions byte-exact) and the decisive change was replacing an opinion with a check.
 
 - **Byte-matching decompilation.** Compile the reconstruction with **the compiler the original game was
   built with**, then compare each function's bytes against the original `EXE`/`OBJ` (a `PDB` helps but is
@@ -56,14 +57,15 @@ functions reconstructed, 83% byte-exact) and the decisive change was replacing a
 - **The payoff is not only accuracy — it is which models can do the work.** Once the verdict was
   mechanical, cheap/weak models that had previously produced "extremely bad" output became reliable. A
   strong oracle buys more than a strong model, and lets you scale out agents cheaply.
-- **A reviewer is not a substitute.** A reviewer agent passed readable-but-wrong code for weeks because
-  nothing defined "correct". Worse, **the worker's own commit/code comments act as prompt injection**: the
-  reviewer accepted the worker's justification instead of checking the original. Judge a deviation against
-  the source, never against the story attached to it.
+- **A reviewer is not a substitute.** A reviewer agent passed extremely readable but semantically wrong code
+  because nothing defined "correct". Worse, **the worker's own commit/code comments act as prompt
+  injection**: the reviewer accepted the worker's justification instead of checking the original. Judge a
+  deviation against the source, never against the story attached to it.
 - **Accept its limits.** Byte matching is slow (register allocation, inlining and calling conventions are
   hard to reproduce exactly), some functions are unmatchable (identical inputs producing different compiler
   output, non-determinism, linker COMDAT folding), and it will not catch *architectural* drift — only wrong
-  semantics. Stop chasing the last few percent once behaviour is verified another way.
+  semantics. Stop chasing the last few percent once behaviour is checked another way (there, the game ran
+  flawlessly), and say that the unmatched functions' semantics are believed, not proven.
 
 ## Gotchas
 1. **Screenshots nobody looks at.**
@@ -111,7 +113,7 @@ functions reconstructed, 83% byte-exact) and the decisive change was replacing a
 8. **Instructions and oracles decay over long autonomous runs.** A rule stated once gets forgotten or
    de-prioritised as the context fills and compacts. **Fix:** re-inject the goal and hard rules on a timer
    (an hourly prompt to re-read the brief worked), and compact **earlier** than the default (≈40% context
-   fill, not 90%) so finished work stops crowding out the rules.
+   fill; the report used 42%, against a 90% default) so finished work stops crowding out the rules.
 
 ## Seen in
 - [Minecraft inside GTA V](../games/gta-v/minecraft-passthrough.md)
