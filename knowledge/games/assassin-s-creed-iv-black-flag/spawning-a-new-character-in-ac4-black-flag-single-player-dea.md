@@ -220,3 +220,12 @@ valuable artifact is the class-descriptor table and the RVA oracle.
 - True model swap for the ghost body: [coop-ghost-avatar.md](coop-ghost-avatar.md) records the remaining
   work (an engine skin/morph path). That is the shortest route to an *assassin-looking* second character,
   on top of the working driven body.
+
+---
+
+## See also (2026-10-11) — a working route
+
+A rendered second player character **is** achievable; see
+**`spawning-a-real-second-player-in-ac4-black-flag-the-working-.md`** (method by **Kamzik123**,
+[AC4Coop](https://github.com/Kamzik123/AC4Coop)). The negative results above (which routes fail and why)
+remain correct and useful.
