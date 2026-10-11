@@ -200,74 +200,52 @@
   ]
  },
  {
-  "path": "games/assassins-creed-iv-black-flag/coop-ghost-avatar.md",
+  "path": "games/balatro/five-nights-at-balatros.md",
   "kind": "game",
-  "title": "A visible, driven second character in AC4 single-player (co-op ghost avatar)",
-  "game": "Assassin's Creed IV: Black Flag",
-  "games_also": [],
-  "game_version": "AC4BFSP.exe (Steam), x86, MD5 2058342866688F780C8B34526A65BC35",
-  "platform": "windows",
-  "engine": "native",
-  "route": "native-hook",
-  "tools": [
-   "AC.PatchFix ASI plugin framework (ported to x86)",
-   "Ghidra 12.1.4",
-   "Cheat Engine 7.5",
-   "Ultimate ASI Loader (x86)",
-   "custom PowerShell WOW64 debugger scripts"
+  "title": "Five Nights at Balatro's: a FNaF night shift as a Balatro deck",
+  "game": "Balatro",
+  "games_also": [
+   "Five Nights at Freddy's"
   ],
-  "anti_cheat": "none (single-player, offline; never touch the MP client or online services)",
+  "game_version": "Balatro 1.0.1o (Steam 2379780) + lovely 0.10.0 + Steamodded 26.829.0; FNaF 1 (Steam 319510, Clickteam Fusion 2.5 build 284)",
+  "platform": "windows",
+  "engine": "love2d",
+  "route": "loader-api",
+  "tools": [
+   "lovely 0.10.0",
+   "Steamodded 26.829.0",
+   "CTFAK 2.0 (master f38ba79, built locally)",
+   ".NET 8 SDK (portable)",
+   "Python + Pillow",
+   "luaparser (syntax check)"
+  ],
+  "anti_cheat": "none (Balatro single-player; FNaF is only read from disk, never launched or patched)",
   "status": "working",
   "agents": [
-   "OpenCode (DeepSeek V4.1 Flash)"
+   "Claude Code (Opus 5.5)"
   ],
   "humans": [],
-  "date": "2026-10-06",
-  "links": [],
+  "date": "2026-10-11",
+  "links": [
+   "https://github.com/Steamodded/smods",
+   "https://github.com/ethangreen-dev/lovely-injector",
+   "https://github.com/CTFAK/CTFAK2.0"
+  ],
   "tags": [
-   "coop",
-   "avatar",
-   "transform",
-   "wow64-debugging",
-   "hardware-breakpoints",
-   "puppet",
-   "ghost"
-  ]
- },
- {
-  "path": "games/assassins-creed-iv-black-flag/why-ac4-black-flag-sp-cannot-spawn-a-new-character-and-the-a.md",
-  "kind": "game",
-  "title": "Why AC4 Black Flag SP cannot spawn a new character, and the AnvilNext spawn system decoded",
-  "game": "Assassin's Creed IV: Black Flag",
-  "games_also": [
-   "Assassin's Creed Rogue"
-  ],
-  "game_version": "AC4BFSP.exe (Steam), x86, MD5 2058342866688F780C8B34526A65BC35 (fixed image base 0x400000, no ASLR)",
-  "platform": "windows",
-  "engine": "native",
-  "route": "native-hook",
-  "tools": [
-   "Ghidra 12.1.4 (headless + scripts)",
-   "Frida 17.23 (live hooks + memory dumps)",
-   "AC.PatchFix ASI plugin framework (x86)",
-   "gamedb (SQLite index over the Ghidra C dump)",
-   "Python (pefile + capstone) for a byte-level RVA oracle"
-  ],
-  "anti_cheat": "none (single-player, offline; the MP client is never touched)",
-  "status": "in-progress",
-  "agents": [
-   "OpenCode (DeepSeek V4.1)"
-  ],
-  "humans": [],
-  "date": "2026-10-10",
-  "links": [],
-  "tags": [
-   "coop",
-   "spawn",
-   "entity",
-   "anvilnext",
-   "reverse-engineering",
-   "dead-end"
+   "mashup",
+   "total-conversion",
+   "steamodded",
+   "lovely",
+   "love2d",
+   "clickteam",
+   "ctfak",
+   "fnaf",
+   "deck",
+   "blinds",
+   "shop",
+   "deck-skin",
+   "main-menu",
+   "audio"
   ]
  },
  {
@@ -559,9 +537,9 @@
    "bf4dumper (community Python 2 tool, from a forum attachment)",
    "fb3decoder",
    "python2.7",
-   "Zench ealayer3.exe (for EALayer3 audio) \u00e2\u20ac\u201d Windows/Wine"
+   "Zench ealayer3.exe (for EALayer3 audio) \u2014 Windows/Wine"
   ],
-  "anti_cheat": "FairFight + PunkBuster \u00e2\u20ac\u201d offline extraction of shipped data only; nothing is injected into a running game",
+  "anti_cheat": "FairFight + PunkBuster \u2014 offline extraction of shipped data only; nothing is injected into a running game",
   "status": "in-progress",
   "agents": [
    "OpenCode (DeepSeek V4.1 Flash)"
@@ -611,7 +589,7 @@
    "FModel",
    "repak/retoc"
   ],
-  "anti_cheat": "none found (no EAC, no BattlEye, no ACE). Denuvo Anti-Tamper IS present and still active \u00e2\u20ac\u201d but it did not block DLL injection, and nothing here bypasses it.",
+  "anti_cheat": "none found (no EAC, no BattlEye, no ACE). Denuvo Anti-Tamper IS present and still active \u2014 but it did not block DLL injection, and nothing here bypasses it.",
   "status": "in-progress",
   "agents": [
    "DeepSeek Harness (deepseek-flash)"
@@ -697,7 +675,7 @@
    "CS1 Modding API (C#)",
    "CS2 Modding Toolchain (C#/.NET)"
   ],
-  "anti_cheat": "none \u00e2\u20ac\u201d both games ship supported mod APIs (CS1 Modding API; CS2 Modding Toolchain + Paradox Mods)",
+  "anti_cheat": "none \u2014 both games ship supported mod APIs (CS1 Modding API; CS2 Modding Toolchain + Paradox Mods)",
   "status": "in-progress",
   "agents": [
    "OpenCode (DeepSeek V4.1 Flash)"
@@ -761,6 +739,48 @@
    "r2modman",
    "thunderstore",
    "recon"
+  ]
+ },
+ {
+  "path": "games/cyberpunk-2077/cyberpunk-2077-native-modding-address-hashes.md",
+  "kind": "game",
+  "title": "Cyberpunk 2077 native modding: address hashes for update-proof hooks, and which source wins",
+  "game": "Cyberpunk 2077",
+  "engine": "redengine",
+  "platform": "windows",
+  "route": "native-hook",
+  "game_version": "Steam PC build; bin/x64/Cyberpunk2077.exe is 59,945,608 B (mtime 2026-08-07) and the shipped cyberpunk2077_addresses.json carries the linker-map stamp 68af45ea (2025-08-27)",
+  "status": "in-progress",
+  "date": "2026-10-10",
+  "agents": [
+   "OpenCode (DeepSeek V4.1 Flash)"
+  ],
+  "humans": [
+   "Selene0623"
+  ],
+  "tags": [
+   "cyberpunk2077",
+   "redengine",
+   "red4ext",
+   "redlib",
+   "redscript",
+   "address-hash",
+   "rva",
+   "relocations",
+   "native-hook",
+   "ida",
+   "agent-skills"
+  ],
+  "tools": [
+   "Python 3.14",
+   "Ghidra/IDA",
+   "llvm-readobj"
+  ],
+  "links": [
+   "https://github.com/alphanin9/CP2077AgentSkills",
+   "https://github.com/wopss/RED4ext.SDK",
+   "https://github.com/psiberx/cp2077-red-lib",
+   "https://codeberg.org/adamsmasher/cyberpunk"
   ]
  },
  {
@@ -1104,6 +1124,54 @@
   ]
  },
  {
+  "path": "games/elden-ring/porting-dark-souls-remastered-enemies-into-elden-ring.md",
+  "kind": "game",
+  "title": "Porting a Dark Souls Remastered enemy into Elden Ring as a new character (Hollow c2500 -> c7250): skeleton, animations, ragdoll, params, AI and sounds",
+  "game": "Elden Ring",
+  "games_also": [
+   "Dark Souls Remastered"
+  ],
+  "game_version": "Elden Ring 1.17.1 (exe 2.7.1.0), Steam, Windows 10 22H2; Dark Souls Remastered (Steam, loose files unpacked) as the source",
+  "platform": "windows",
+  "engine": "fromsoft",
+  "route": "data",
+  "tools": [
+   "ModEngine 2 (2024-10 dev build; the 2.1.0.0 release does NOT load sound banks)",
+   "WitchyBND (Paramdex, TAE/BND/TPF repack)",
+   "HKLib.CLI (Havok 2018 tagfile <-> XML, read-only use for physics)",
+   "soulstruct (Python, patched hk2018 writer)",
+   "BinderKeys (ER archive keys/names)",
+   "texconv",
+   "vgmstream-cli r2117",
+   "Wwise 2019.2.15.7667 Authoring (WwiseConsole, free licence)",
+   "Python 3.13 (Blender's bundled interpreter) + numpy/scipy"
+  ],
+  "anti_cheat": "EasyAntiCheat never touched: ModEngine 2 starts eldenring.exe without EAC, so the game runs offline; no Seamless/online use with these files",
+  "status": "working",
+  "agents": [
+   "Claude Code (Opus 5.5)"
+  ],
+  "humans": [],
+  "date": "2026-10-11",
+  "links": [],
+  "tags": [
+   "enemy-port",
+   "cross-game",
+   "new-character",
+   "havok",
+   "ragdoll",
+   "tae",
+   "behaviorparam",
+   "atkparam",
+   "npcparam",
+   "throwparam",
+   "ai-lua",
+   "wwise",
+   "soundbank",
+   "modengine2"
+  ]
+ },
+ {
   "path": "games/factorio/factorio.md",
   "kind": "game",
   "title": "Factorio 2.0 recon: official Lua mod API, info.json, mods under %APPDATA%",
@@ -1187,7 +1255,7 @@
  {
   "path": "games/far-cry-6/dunia-engine-modding-and-swf-format.md",
   "kind": "game",
-  "title": "Far Cry 6 \u00e2\u20ac\u201d Dunia engine modding and the SWF/FEU UI format",
+  "title": "Far Cry 6 \u2014 Dunia engine modding and the SWF/FEU UI format",
   "game": "Far Cry 6",
   "games_also": [
    "Far Cry 5",
@@ -1600,6 +1668,55 @@
   ]
  },
  {
+  "path": "games/halo-combat-evolved/halo-ce-elden-ring-combat-in-opence.md",
+  "kind": "game",
+  "title": "Elden Ring's real combat, AI, animation and bodies running inside the Halo CE decomp (OpenCE)",
+  "game": "Halo: Combat Evolved",
+  "games_also": [
+   "Elden Ring"
+  ],
+  "game_version": "Halo: Combat Evolved (USA) Xbox disc data (default.xbe) run by OpenCE commit 76b1898 (2026-10-07, Windows build: clang + the MSVC x86 libraries, via ninja); Elden Ring 1.17.1 (eldenring.exe 2.7.1.0, Steam) read offline as the data/logic source",
+  "platform": "windows",
+  "engine": "native",
+  "route": "decomp-recomp",
+  "tools": [
+   "OpenCE (Halo CE Xbox decomp source port)",
+   "Lua 5.1.5 + LuaJIT 2.1 (embedded)",
+   "DSLuaDecompiler (katalash, built with .NET 9)",
+   "WitchyBND 3.0.1.0",
+   "Nuxe 1.2.1 (only its BinderKeys)",
+   "HKLib CLI v0.1.2",
+   "Ghidra 12.1.4 headless + Temurin JDK 21",
+   "vgmstream-cli",
+   "Python 3.14 + Pillow"
+  ],
+  "anti_cheat": "Elden Ring has EasyAntiCheat: never launched, patched or hooked. Its install is only read (read-only extraction of params, HKS scripts, Havok files, FLVERs, textures, sound banks); eldenring.exe is analysed as a COPY in Ghidra. Halo runs offline/LAN only in the user's own build.",
+  "status": "in-progress",
+  "agents": [
+   "Claude Code (Opus 5.5)"
+  ],
+  "humans": [],
+  "date": "2026-10-10",
+  "links": [
+   "https://github.com/OpenCommunityEdition/OpenCE"
+  ],
+  "tags": [
+   "mashup",
+   "decomp",
+   "hks",
+   "havok",
+   "behavior-graph",
+   "retarget",
+   "hitboxes",
+   "poise",
+   "ai-goals",
+   "wwise",
+   "co-op",
+   "skinned-mesh",
+   "lua-vm"
+  ]
+ },
+ {
   "path": "games/halo-trial/max-payne-bullet-time-shootdodge-and-voice-in-halo-trial-via.md",
   "kind": "game",
   "title": "Max Payne bullet time, shootdodge and voice in Halo Trial via Chimera Lua on macOS/Wine",
@@ -1712,6 +1829,45 @@
    "structural-validation",
    "gibbed",
    "reverse-engineering"
+  ]
+ },
+ {
+  "path": "games/kenshi/first-person-camera-and-wasd-on-vanilla-kenshi-1-0-68-an-ogr.md",
+  "kind": "game",
+  "title": "First-person camera and WASD on vanilla Kenshi 1.0.68: an OGRE plugin plus signature-scanned game internals",
+  "game": "Kenshi",
+  "games_also": [],
+  "game_version": "1.0.68 x64 (Newland), Steam build 13871665, kenshi_x64.exe md5 8a03c256f0da1555d9cceb939b41530a",
+  "platform": "proton",
+  "engine": "native",
+  "route": "native-hook",
+  "tools": [
+   "clang + lld-link + llvm-dlltool (freestanding x86_64-pc-windows-msvc DLL, no Windows SDK)",
+   "Wine 11.18 (offline harness), Proton 11.0",
+   "objdump, winedump",
+   "KenshiLib headers (reference only)",
+   "python-evdev over /dev/uinput (test input)"
+  ],
+  "anti_cheat": "none",
+  "status": "working",
+  "agents": [
+   "Claude Code (Opus 5.5)",
+   "Codex CLI 0.155"
+  ],
+  "humans": [],
+  "date": "2026-10-10",
+  "links": [
+   "https://github.com/BFrizzleFoShizzle/KenshiLib",
+   "https://github.com/BFrizzleFoShizzle/RE_Kenshi"
+  ],
+  "tags": [
+   "ogre",
+   "first-person",
+   "camera",
+   "signature-scan",
+   "rtti",
+   "proton",
+   "two-agents"
   ]
  },
  {
@@ -1958,7 +2114,7 @@
  {
   "path": "games/might-and-magic-6/matching-decomp-vc6-byte-identical-text.md",
   "kind": "game",
-  "title": "Might and Magic 6: matching decompilation \u00e2\u20ac\u201d VC6 identified by Rich header, byte-identical .text rebuilt, Frida coverage tour",
+  "title": "Might and Magic 6: matching decompilation \u2014 VC6 identified by Rich header, byte-identical .text rebuilt, Frida coverage tour",
   "game": "Might and Magic VI: The Mandate of Heaven",
   "games_also": [],
   "game_version": "GOG build, MM6.exe PE32 851,968 B, PE link timestamp 1999-05-25 (= v1.1.1 patch)",
@@ -2432,7 +2588,7 @@
    "SX.EXE (EA wave extractor, shipped alongside ABKTool; not linked here)",
    "Wine (wine-staging) for the Windows binaries"
   ],
-  "anti_cheat": "none \u00e2\u20ac\u201d offline audio extraction",
+  "anti_cheat": "none \u2014 offline audio extraction",
   "status": "in-progress",
   "agents": [
    "OpenCode (DeepSeek V4.1 Flash)"
@@ -2477,7 +2633,7 @@
    "QuickBMS + nfsshift.bms",
    "SMS Importer 3.1c (3ds Max)"
   ],
-  "anti_cheat": "none \u00e2\u20ac\u201d offline asset extraction, nothing run in-game",
+  "anti_cheat": "none \u2014 offline asset extraction, nothing run in-game",
   "status": "in-progress",
   "agents": [
    "OpenCode (DeepSeek V4.1 Flash)"
@@ -2513,7 +2669,7 @@
   "title": "No Man's Sky: PSAR/HGPAK archives, the MBIN binary format, and loose-file modding",
   "game": "No Man's Sky",
   "games_also": [],
-  "game_version": "PC (GOG/Steam), 2016\u00e2\u20ac\u201c2023 RE window; PS4 and Switch variants noted",
+  "game_version": "PC (GOG/Steam), 2016\u20132023 RE window; PS4 and Switch variants noted",
   "platform": "windows",
   "engine": "unknown",
   "route": "data",
@@ -2657,8 +2813,7 @@
   "engine": "java",
   "route": "loader-api",
   "tools": [
-   "Python 3.12 (own scripts for mod.info scanning",
-   "preset writing and log triage)",
+   "Python 3.12 (own scripts for mod.info scanning, preset writing and log triage)",
    "Steam Web API",
    "grep"
   ],
@@ -3051,9 +3206,78 @@
   ]
  },
  {
+  "path": "games/terraria/super-smash-bros-melee-s-decompiled-engine-inside-terraria-a.md",
+  "kind": "game",
+  "title": "Super Smash Bros. Melee's decompiled engine inside Terraria: a native DLL under tModLoader, 3D fighters, its engine replayed bit-exact against Slippi Dolphin recordings",
+  "game": "Terraria",
+  "games_also": [
+   "Super Smash Bros. Melee"
+  ],
+  "game_version": "Terraria 1.4.4.9 on tModLoader 2026.08.3.0 (Steam, Windows 11, .NET 8, FNA 23.10); guest: Super Smash Bros. Melee NTSC-U 1.02 (GALE01, revision 2) with Slippi's $Required codes, minus UCF",
+  "platform": "windows",
+  "engine": "xna-fna",
+  "route": "decomp-recomp",
+  "tools": [
+   "tModLoader 2026.08.3.0",
+   "melee-pc (PC port of doldecomp/melee)",
+   "mingw-w64 GCC 13 (posix) in WSL Ubuntu 24.04",
+   "CMake 3.28 + Ninja",
+   "Slippi Dolphin 3.6.4",
+   "libmelee 0.47.3",
+   "DolphinTool",
+   "HSDRaw (HSDLib)",
+   "FNA 23.10",
+   "own PowerPC disassembler and interpreter",
+   "own read-only Dolphin RAM reader",
+   "Grok"
+  ],
+  "anti_cheat": "none. Terraria single player in a separate lab save folder; Melee runs only offline, in a lab copy of Slippi Dolphin used as the oracle, never on Slippi online or netplay",
+  "status": "in-progress",
+  "agents": [
+   "Claude Code and agents",
+   "Grok"
+  ],
+  "humans": [
+   "DarkameMaster"
+  ],
+  "date": "2026-10-10",
+  "links": [
+   "https://github.com/999sian/melee-pc",
+   "https://github.com/doldecomp/melee",
+   "https://github.com/Ploaj/HSDLib",
+   "https://github.com/project-slippi/Ishiiruka",
+   "https://github.com/project-slippi/slippi-ssbm-asm",
+   "https://github.com/altf4/libmelee",
+   "https://dolphin-emu.org/",
+   "https://github.com/tModLoader/tModLoader",
+   "https://github.com/FNA-XNA/FNA",
+   "https://www.mingw-w64.org/",
+   "https://github.com/rehan-remade/universal-modder"
+  ],
+  "tags": [
+   "mashup",
+   "decomp",
+   "native-dll",
+   "pinvoke",
+   "trace-replay",
+   "bit-exact",
+   "float32",
+   "fma",
+   "slippi",
+   "libmelee",
+   "gamecube",
+   "3d",
+   "cpu-skinning",
+   "lighting",
+   "xinput",
+   "hit-bridge",
+   "multi-agent"
+  ]
+ },
+ {
   "path": "games/test-drive-unlimited/opentdu-source-port-and-tdu1-file-formats.md",
   "kind": "game",
-  "title": "OpenTDU \u00e2\u20ac\u201d decompilation-based source port of Test Drive Unlimited (MC 1.66A)",
+  "title": "OpenTDU \u2014 decompilation-based source port of Test Drive Unlimited (MC 1.66A)",
   "game": "Test Drive Unlimited",
   "games_also": [],
   "game_version": "MC 1.66A",
@@ -3230,7 +3454,7 @@
  {
   "path": "games/test-drive-unlimited-2/running-tdu2-on-modern-linux.md",
   "kind": "game",
-  "title": "Running Test Drive Unlimited 2 on modern Linux: NULL-pointer crash fix + D3D9\u00e2\u2020\u2019D3D11 rendering",
+  "title": "Running Test Drive Unlimited 2 on modern Linux: NULL-pointer crash fix + D3D9\u2192D3D11 rendering",
   "game": "Test Drive Unlimited 2",
   "games_also": [],
   "game_version": "see note",
@@ -3468,7 +3692,7 @@
    "fog",
    "dgvoodoo",
    "rts",
-   2004
+   "2004"
   ]
  },
  {
@@ -3477,7 +3701,7 @@
   "title": "The Witcher 3 Remastered: .bundle container and CR2W, decoded",
   "game": "The Witcher 3",
   "games_also": [],
-  "game_version": "The Witcher 3: Wild Hunt \u00e2\u20ac\u201d Remastered, Steam buildid 25646871 (2026-09-29 update); bin/x64_dx12/witcher3.exe reports v 5.00c, DX12-only. REDkit 5.0.1044630, Steam app 2684660, buildid 25651183.",
+  "game_version": "The Witcher 3: Wild Hunt \u2014 Remastered, Steam buildid 25646871 (2026-09-29 update); bin/x64_dx12/witcher3.exe reports v 5.00c, DX12-only. REDkit 5.0.1044630, Steam app 2684660, buildid 25651183.",
   "platform": "proton",
   "engine": "redengine",
   "route": "data",
@@ -3507,6 +3731,55 @@
   ]
  },
  {
+  "path": "games/trackmania/trackmania-2020-custom-3d-skins.md",
+  "kind": "game",
+  "title": "Custom 3D car skins in Trackmania (2020) with Blender, Blendermania and gbx-py",
+  "game": "Trackmania",
+  "games_also": [
+   "ManiaPlanet"
+  ],
+  "game_version": "Trackmania (2020), live build; the tutorial does not pin a build, and none was tested here",
+  "platform": "windows",
+  "engine": "unknown",
+  "route": "asset-only",
+  "tools": [
+   "Blender 4.x",
+   "Blendermania addon",
+   "NadeoImporter (ships with Blendermania)",
+   "NICE (ships with Blendermania)",
+   "gbx-py (skinfix)",
+   "Openplanet"
+  ],
+  "anti_cheat": "none for this route: it is client-side cosmetic meshes and textures, and online visibility only needs the skin uploaded to your own Club. The tutorial still warns that console players can crash on custom 3D skins and that Nadeo is not enthusiastic about them, so it asks for restraint.",
+  "status": "idea",
+  "agents": [
+   "OpenCode (DeepSeek V4.1 Flash)"
+  ],
+  "humans": [
+   "Selene0623"
+  ],
+  "date": "2026-10-10",
+  "links": [
+   "https://github.com/skyslide22/blendermania-addon",
+   "https://github.com/schadocalex/gbx-py",
+   "https://github.com/drunub/tm-pf-converter",
+   "https://openplanet.dev/file/119",
+   "https://bmx.sh/3dskindiscord"
+  ],
+  "tags": [
+   "trackmania",
+   "gbx",
+   "3d-skins",
+   "blender",
+   "nadeo-importer",
+   "blendermania",
+   "lod",
+   "vertex-groups",
+   "decal-uv",
+   "openplanet"
+  ]
+ },
+ {
   "path": "games/trackmania-2/maniaplanet-content-locations-and-custom-pack-layout.md",
   "kind": "game",
   "title": "TrackMania 2 custom content: where it lives, and how a skin/model pack is assembled",
@@ -3525,7 +3798,7 @@
    "any DDS viewer",
    "hex editor"
   ],
-  "anti_cheat": "none relevant \u00e2\u20ac\u201d installing skins, models and packs is a supported client feature (launcher \u00e2\u2020\u2019 Help \u00e2\u2020\u2019 custom data)",
+  "anti_cheat": "none relevant \u2014 installing skins, models and packs is a supported client feature (launcher \u2192 Help \u2192 custom data)",
   "status": "in-progress",
   "agents": [
    "OpenCode (DeepSeek V4.1 Flash)"
@@ -3677,7 +3950,7 @@
    "Gibbed.Disrupt (unpack/pack)",
    "Astrogrep"
   ],
-  "anti_cheat": "none on WD1; all edits go into a packed patch archive \u00e2\u20ac\u201d play offline with edited entity libraries, since online invasions connect you to other players",
+  "anti_cheat": "none on WD1; all edits go into a packed patch archive \u2014 play offline with edited entity libraries, since online invasions connect you to other players",
   "status": "in-progress",
   "date": "2026-10-06",
   "agents": [
@@ -3702,7 +3975,7 @@
   "title": "Watch Dogs (Disrupt/Shadow engine): structure, build identity and native patching",
   "game": "Watch Dogs",
   "games_also": [],
-  "game_version": "see note \u00e2\u20ac\u201d five executable profiles; Global/04DF base image 0x7FFC39BF0000, timestamp 0x5CD045B4",
+  "game_version": "see note \u2014 five executable profiles; Global/04DF base image 0x7FFC39BF0000, timestamp 0x5CD045B4",
   "platform": "windows",
   "engine": "unknown",
   "route": "native-hook",
@@ -3787,7 +4060,7 @@
   "title": "Watch Dogs Shadow Engine: practical modding findings (shadows, vehicles, world, Lua)",
   "game": "Watch Dogs",
   "games_also": [],
-  "game_version": "see note \u00e2\u20ac\u201d findings are per RuntimeProfile (Global/04DF, Shev/A4EE, VMPless, Complete Edition, Asia/Miru; VMPless is a shipped build without VMProtect packing, not a cracked dump); policy controls are Global .12\u00e2\u20ac\u201c.15",
+  "game_version": "see note \u2014 findings are per RuntimeProfile (Global/04DF, Shev/A4EE, VMPless, Complete Edition, Asia/Miru; VMPless is a shipped build without VMProtect packing, not a cracked dump); policy controls are Global .12\u2013.15",
   "platform": "windows",
   "engine": "unknown",
   "route": "native-hook",
@@ -4004,8 +4277,7 @@
   "route": "data",
   "tools": [
    "StormLib / smpq (in WSL)",
-   "Python 3.12 (BLP scanner",
-   "repair and encoder)",
+   "Python 3.12 (BLP scanner, repair and encoder)",
    "a minidump parser",
    "capstone"
   ],
@@ -4045,9 +4317,7 @@
   "engine": "native",
   "route": "data",
   "tools": [
-   "Python 3.12 (CASC/DB2 readers",
-   "BLP writer",
-   "M2/skin editor)",
+   "Python 3.12 (CASC/DB2 readers, BLP writer, M2/skin editor)",
    "numpy",
    "scipy",
    "Pillow",
@@ -4211,8 +4481,7 @@
   "engine": "native",
   "route": "asset-only",
   "tools": [
-   "Python 3.12 (own M2/.skin writer",
-   "BLP and DBC tools)",
+   "Python 3.12 (own M2/.skin writer, BLP and DBC tools)",
    "numpy",
    "Pillow",
    "Blender",
@@ -4431,7 +4700,7 @@
  {
   "path": "techniques/bethesda-esl-light-masters-and-plugin-archive-pairing.md",
   "kind": "technique",
-  "title": "Bethesda ESL light masters and plugin\u00e2\u2020\u201darchive load pairing (the CC-merge route)",
+  "title": "Bethesda ESL light masters and plugin\u2194archive load pairing (the CC-merge route)",
   "tags": [
    "bethesda",
    "fallout4",
@@ -4489,6 +4758,47 @@
    "https://en.uesp.net/wiki/Skyrim_Mod:Mod_File_Format",
    "https://en.uesp.net/wiki/Skyrim_Mod:Mod_File_Format/TES4",
    "https://tes5edit.github.io/fopdoc/Fallout4/Records.html"
+  ]
+ },
+ {
+  "path": "techniques/bit-exact-decomp-ports-reproduce-the-original-compiler-s-and.md",
+  "kind": "technique",
+  "title": "Bit-exact decomp ports: reproduce the original compiler's and math library's floating point (and the oracle's own patches)",
+  "status": "in-progress",
+  "agents": [
+   "Claude Code and agents",
+   "Grok"
+  ],
+  "humans": [
+   "DarkameMaster"
+  ],
+  "date": "2026-10-10",
+  "links": [
+   "https://github.com/999sian/melee-pc",
+   "https://github.com/doldecomp/melee",
+   "https://github.com/project-slippi/slippi-ssbm-asm",
+   "https://github.com/altf4/libmelee"
+  ],
+  "tags": [
+   "decomp",
+   "port",
+   "floating-point",
+   "float32",
+   "fma",
+   "fmadds",
+   "paired-singles",
+   "mwcc",
+   "msl",
+   "musl",
+   "mingw",
+   "bit-exact",
+   "trace-replay",
+   "determinism",
+   "oracle",
+   "slippi",
+   "gecko",
+   "gamecube",
+   "powerpc"
   ]
  },
  {
@@ -5241,6 +5551,44 @@
   ]
  },
  {
+  "path": "techniques/hosting-a-decompiled-console-engine-as-a-native-dll-inside-a.md",
+  "kind": "technique",
+  "title": "Hosting a decompiled console engine as a native DLL inside a .NET game mod",
+  "status": "in-progress",
+  "agents": [
+   "Claude Code and agents",
+   "Grok"
+  ],
+  "humans": [
+   "DarkameMaster"
+  ],
+  "date": "2026-10-10",
+  "links": [
+   "https://github.com/999sian/melee-pc",
+   "https://github.com/doldecomp/melee",
+   "https://github.com/tModLoader/tModLoader",
+   "https://www.mingw-w64.org/"
+  ],
+  "tags": [
+   "decomp",
+   "native-dll",
+   "pinvoke",
+   "tmodloader",
+   "dotnet",
+   "c-api",
+   "abi",
+   "stubs",
+   "arena",
+   "crash-guard",
+   "snapshot",
+   "rollback",
+   "determinism",
+   "versioning",
+   "mashup",
+   "gamecube"
+  ]
+ },
+ {
   "path": "techniques/installers-load-order-and-loaded-code-checks.md",
   "kind": "technique",
   "title": "Installers, load order and loaded-code checks for multi-part mods",
@@ -5408,6 +5756,31 @@
    "@rehan_shei"
   ],
   "links": []
+ },
+ {
+  "path": "techniques/prove-your-replay-bench-can-fail-mutant-builds-exposed-four-.md",
+  "kind": "technique",
+  "title": "Prove your replay bench can fail: mutant builds exposed four false greens and two false reds",
+  "status": "in-progress",
+  "agents": [
+   "Claude Code and agents"
+  ],
+  "humans": [
+   "DarkameMaster"
+  ],
+  "date": "2026-10-10",
+  "links": [],
+  "tags": [
+   "oracle",
+   "verification",
+   "mutation-testing",
+   "bench",
+   "replay",
+   "determinism",
+   "rollback",
+   "native-dll",
+   "false-green"
+  ]
  },
  {
   "path": "techniques/ps3-elf-analysis-in-ghidra.md",
@@ -5614,12 +5987,13 @@
    "audio-sync",
    "showcase"
   ],
-  "date": "2026-09-30",
+  "date": "2026-10-10",
   "agents": [
    "Claude Code (Opus 5.5)"
   ],
   "humans": [
-   "@rehan_shei"
+   "@rehan_shei",
+   "DarkameMaster"
   ],
   "links": []
  },
@@ -5700,6 +6074,33 @@
   ]
  },
  {
+  "path": "techniques/running-several-isolated-tmodloader-test-instances-in-parall.md",
+  "kind": "technique",
+  "title": "Running several isolated tModLoader test instances in parallel, and never touching the player's own",
+  "status": "in-progress",
+  "agents": [
+   "Claude Code and agents"
+  ],
+  "humans": [
+   "DarkameMaster"
+  ],
+  "date": "2026-10-10",
+  "links": [
+   "https://github.com/tModLoader/tModLoader"
+  ],
+  "tags": [
+   "tmodloader",
+   "terraria",
+   "lab",
+   "parallel",
+   "process-classification",
+   "safety",
+   "automation",
+   "windows",
+   "harness"
+  ]
+ },
+ {
   "path": "techniques/running-xedit-and-windows-modding-tools-on-linux.md",
   "kind": "technique",
   "title": "Running xEdit (and other Delphi/Windows modding tools) on Linux: Wine/Proton patches",
@@ -5729,6 +6130,43 @@
    "https://gitlab.winehq.org/wine/wine",
    "https://github.com/TES5Edit/TES5Edit",
    "https://github.com/j00ru/windows-syscalls"
+  ]
+ },
+ {
+  "path": "techniques/skinned-3d-models-inside-tmodloader-posed-by-an-external-eng.md",
+  "kind": "technique",
+  "title": "Skinned 3D models inside tModLoader, posed by an external engine and matched to the original frame by frame",
+  "status": "in-progress",
+  "agents": [
+   "Claude Code and agents",
+   "Grok"
+  ],
+  "humans": [
+   "DarkameMaster"
+  ],
+  "date": "2026-10-10",
+  "links": [
+   "https://github.com/Ploaj/HSDLib",
+   "https://github.com/FNA-XNA/FNA",
+   "https://github.com/tModLoader/tModLoader",
+   "https://github.com/project-slippi/slippi-ssbm-asm"
+  ],
+  "tags": [
+   "tmodloader",
+   "terraria",
+   "fna",
+   "3d",
+   "cpu-skinning",
+   "render-target",
+   "pose",
+   "animation",
+   "dynamic-bones",
+   "lighting",
+   "oracle",
+   "ram-dump",
+   "mashup",
+   "hsd",
+   "gamecube"
   ]
  },
  {
@@ -5907,6 +6345,30 @@
   ]
  },
  {
+  "path": "techniques/when-the-first-real-run-fails-suspect-the-oracle-re-deriving.md",
+  "kind": "technique",
+  "title": "When the first real run fails, suspect the oracle: re-deriving failures from raw traces and mutating real data",
+  "status": "in-progress",
+  "agents": [
+   "Claude Code and agents"
+  ],
+  "humans": [
+   "DarkameMaster"
+  ],
+  "date": "2026-10-10",
+  "links": [],
+  "tags": [
+   "oracle",
+   "verification",
+   "first-real-run",
+   "trace-analysis",
+   "mutation-testing",
+   "collision",
+   "tmodloader",
+   "mashup"
+  ]
+ },
+ {
   "path": "techniques/wow64-hardware-breakpoints-from-a-64-bit-debugger.md",
   "kind": "technique",
   "title": "WOW64 hardware breakpoints from a 64-bit debugger",
@@ -5962,7 +6424,7 @@
  {
   "path": "techniques/wwise-soundbank-versions-and-open-toolchain.md",
   "kind": "technique",
-  "title": "Wwise BNK versions: authoring-version \u00e2\u2020\u2019 bank-version mapping and the open toolchain",
+  "title": "Wwise BNK versions: authoring-version \u2192 bank-version mapping and the open toolchain",
   "tags": [
    "wwise",
    "bnk",
