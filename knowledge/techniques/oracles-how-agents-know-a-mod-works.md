@@ -39,6 +39,9 @@ Rules that make oracles work for agents:
 - **Keep a journal (`MODLOG.md`):** every confirmed fact, and every dead end with why. It survives context
   compaction.
 - **Be honest in the result:** write down what the oracle did *not* cover.
+- **Prove the oracle can fail:** run it on one-defect builds or on mutated copies of real traces; a checker that
+  stays green on them isn't checking. See `prove-your-replay-bench-can-fail-mutant-builds-exposed-four-.md`
+  and `when-the-first-real-run-fails-suspect-the-oracle-re-deriving.md`.
 
 ## When correctness must be machine-checkable
 
@@ -121,6 +124,8 @@ functions byte-exact) and the decisive change was replacing an opinion with a ch
 - [San Franciscans civ](../games/age-of-empires-ii-de/san-franciscans-civ.md)
 - [Black Myth: Wukong — ReShade depth dead end](../games/black-myth-wukong/reshade-depth-dead-end.md) (Gotcha 4)
 - [Bloons TD 6 inside Minecraft](../games/minecraft/bloons-td-6-in-minecraft.md) (headless and scripted-world benches, Gotcha 5)
+- [Super Smash Bros. Melee's engine inside Terraria](../games/terraria/super-smash-bros-melee-s-decompiled-engine-inside-terraria-a.md)
+  (a bit-exact replay bench against real recordings, and checking the bench with broken builds)
 
 Reported in: [500+ Billion Tokens Later — letting AI agents decompile a first-person
 shooter](https://momo5502.com/posts/2026-10-09-game-decompilation/) (Maurice Heumann, 2026-10-09) — the source
