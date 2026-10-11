@@ -1,7 +1,7 @@
 ---
 kind: game
-title: Why AC4 Black Flag SP cannot spawn a new character, and the AnvilNext spawn system decoded
-game: 'Assassin''s Creed IV: Black Flag'
+title: 'Spawning a new character in AC4 Black Flag single-player: dead ends and the AnvilNext spawn system'
+game: Assassin's Creed IV Black Flag
 games_also:
   - Assassin's Creed Rogue
 game_version: 'AC4BFSP.exe (Steam), x86, MD5 2058342866688F780C8B34526A65BC35 (fixed image base 0x400000, no ASLR)'
@@ -30,14 +30,17 @@ tags:
   - dead-end
 ---
 
-# Why AC4 Black Flag SP cannot spawn a new character, and the AnvilNext spawn system decoded
+# Spawning a new character in AC4 Black Flag single-player: dead ends and the AnvilNext spawn system
 
 > Goal: for co-op, make Black Flag's own engine **spawn** a second, rendered character instead of
-> hijacking a crowd NPC (see the companion note `coop-ghost-avatar.md`). After decoding the whole
-> spawn path with a byte-level oracle, the answer is that the **single-player build has no reachable
-> path that produces a rendered new character**: appearance is stream/loader-only, and the debug/cheat
-> spawn consumers are stripped from the SP executable. This note records the engine internals, the exact
-> blocking step, and the dead ends, so nobody repeats them.
+> hijacking a crowd NPC (see the companion note [coop-ghost-avatar.md](coop-ghost-avatar.md)). We
+> decoded the spawn path with a byte-level oracle, and **no route we tried from a plugin produced a
+> rendered new character**. A character's appearance is filled in by the loader from streamed data, so
+> nodes we created at runtime stayed empty. The debug/cheat spawns post an event that we found no
+> listener for in the SP executable. The engine itself does spawn rendered characters at runtime (crowd
+> and mission spawners, from builders the loader filled), so this is where our attempts stopped, not a
+> proven engine limit. This note records the engine internals, where each attempt stopped, and the dead
+> ends, so nobody repeats them.
 
 ## Setup
 
@@ -49,7 +52,12 @@ tags:
 - Verification: a small **oracle** script (`pefile` + `capstone`) that resolves each RVA through the PE
   section headers and compares the bytes at that address to the expected instruction — machine-checkable
   PASS/FAIL, so no engine address was trusted on a guess. A sibling game, **AC Rogue (`ACC.exe`, x64)**,
-  is fully decompiled and was used as an architectural reference.
+  is fully decompiled and was used as an architectural reference (see the
+  [Rogue note](../assassin-s-creed-rogue/anvilnext-internals-for-ac-rogue-co-op-player-transform-the-.md)).
+- Single player only. Ubisoft Connect must be running for `AC4BFSP.exe` to start (see the
+  [transform note](reading-the-player-s-world-transform-and-body-position-in-ac.md)). With a plugin or an
+  edited `.forge` in place, put Ubisoft Connect in offline mode and don't use the game's online features;
+  `AC4BFMP.exe` is never run or injected.
 
 ## Route and why
 
@@ -64,6 +72,9 @@ struct holding the class **name**, a 32-bit **id = CRC32(name)**, the object **s
 thunk. A vtable's `+0x14` slot is a one-instruction getter returning the descriptor, so any object can be
 named at runtime: vtable → `[vt+0x14]()` → descriptor → `+0x0C` name pointer, `+0x18` size, `+0x30`
 ctor. Dumping all descriptors yields **1376 classes** (a reusable "find the class that does X" table).
+This is the way past the transform note's "reflection wall": the names have no code xrefs, but every
+vtable leads to its name. The ids are plain CRC-32 of the class name (`zlib.crc32(b"Entity")` is
+`0x0984415E`), so an id found in code can be checked against a guessed name.
 Useful ids: `Entity` `0x0984415E` (size 0x100), `EntityBuilder` `0x971A842E` (0xA0),
 `EntityGroupBuilder` `0xAADF2263`, `SpawningSpecification` `0xFC668456`, `SpawnNPCParams` `0x94D05600`,
 `DynamicReference` `0x9F1640AF`, `ProgressionCharacterSelector` `0x9F1F876B`, `Human` (0xE30).
@@ -72,8 +83,9 @@ Useful ids: `Entity` `0x0984415E` (size 0x100), `EntityBuilder` `0x971A842E` (0x
 (`Entity`, vtable `0x1E4CE90`, 0x100 bytes) whose child/model list lives at `node+0x60` (pointer) and
 `node+0x66` (u16 count). The **only** function that fills that list is the descriptor-driven fill used by
 the loader: it copies the child ids from a serialized descriptor (`+0x10` array, `+0x16` count) one by
-one. Nothing else populates it. So a node created by any runtime factory has an **empty** list and never
-renders — the "appearance-less shell". This single fact explains every failed spawn attempt.
+one. We found nothing else that populates it. So a node created by the runtime factories we tried has an
+**empty** list and never renders — the "appearance-less shell". This one fact explains every failed spawn
+attempt.
 
 **The spawner data chain.** An entity can carry a `SpawningSpecification` → `SpawnNPCParams` →
 `DynamicReference` (the file-id of the character to build) plus a `ProgressionCharacterSelector`. The
@@ -82,24 +94,28 @@ deserializer even resolves the id through the engine's `HandleManager::find-or-c
 record is not the same as using it**: our edits were read (confirmed live) but the spawned NPC still
 rendered as its default. Two sub-cases are now explained:
 - **Crowd-life hosts** (`*CWL_*`, `CrowdLife*` components) take their model from the **crowd system**,
-  which ignores the record's character override — you cannot retarget them by data.
+  which ignores the record's character override, so our data edits couldn't retarget them.
 - **Mission/domino hosts** (with a `DominoSpawningSpecification` / `AIScriptInstance`) *do* render a
-  chosen character — but only when the mission script fires them. There is no free-roam trigger.
+  chosen character — but only when the mission script fires them. We found no free-roam trigger for
+  them; firing one from a plugin is in Open questions.
 
 **The id that a builder wants is a filled "builder", not a template.** `find-or-create(id)` returns an
 **empty shell** (a ref-counted handle to a zeroed object), not a populated builder. Instantiating that
 shell faults inside the builder's member-list binary search (it reads `[builder+0x60]` while the count is
 non-zero → null dereference). A populated builder only comes out of the **deserializer** during load.
 
-**The debug/cheat spawn system is compiled in but dead in SP.** The retail exe still ships the developer
-cheat strings (`Spawn Follow/Fight/Still/RedBall/Ship Dude`, `Change Debug Dude Type`,
+**The debug/cheat spawn system is compiled in, and we found no consumer in SP.** The retail exe still
+ships the developer cheat strings (`Spawn Follow/Fight/Still/RedBall/Ship Dude`, `Change Debug Dude Type`,
 `Teleport Character`) and their handler functions. Each on-foot "Dude" cheat builds a tiny
 `NavigationDudeEvent` object, sets a `mode` byte, and posts it to a global **deferred event queue**
 (the engine's `Channel`). The queue *is* drained every frame and dispatched by a **type-id** lookup —
 but the event's type id (`0x5B446C0C`) occurs **exactly once in the whole executable: inside its own class
-descriptor**. There is no listener, so the event is dropped silently — which matches the in-game result
-(no body, no crash). The consumers were stripped from the SP build; there is no flag to flip. The
-"Spawn Ship Dude" cheat posts a `ShipInfoEvent` to the same dead queue.
+descriptor**. So no code registers a listener with that id as a constant, and the event is dropped
+silently, which matches the in-game result (no body, no crash). A listener that reads the id from the
+descriptor at runtime wouldn't contain the constant; xrefs to the descriptor itself would catch one, and
+that check isn't recorded here. The "Spawn Ship Dude" cheat posts a `ShipInfoEvent` to the same queue.
+In Rogue the same handlers' objects were seen to disappear within a frame (Rogue note, gotcha 2), which
+fits a queue that drops them.
 
 **The three "actor factories" are event classes, not actors.** The only three large fixed-size
 allocations in the binary produce `ShipInfoEvent` (0xDD0), `FightDamageEvent` (0x170) and
@@ -115,15 +131,18 @@ has to be a fully **rendered** character, i.e. it hits the same appearance wall.
 **Setting a real world transform.** The engine's own "Teleport Character" cheat gets a transform
 **interface** from a character's component holder (interface id `0xD`), then calls, in order: a
 can-set(`mtx`) check, the **set-world-transform(`mtx`)**, a gate, and a commit. The matrix is a plain
-row-major 4×4 `float[16]` with translation at `[12..14]` and `[15]=1`. This is the robust way to place a
-body (the companion note wraps this up for the working ghost).
+row-major 4×4 `float[16]` with translation at `[12..14]` and `[15]=1`. It's how the engine itself places
+a character; it wasn't called from a plugin in this work. The ghost avatar writes the node matrix directly
+instead (next paragraph). The Rogue note documents the same interface-`0xD` path (validate at vtable
+`+0x28`, apply at `+0x30`).
 
 **The player's own authoritative transform** (from the companion note) is the character node's 4×4 at
 `node+0x10` (feet at row 3, `+0x40`); writing it from the per-frame hook wins the render frame.
 
 ## Build steps
 
-1. `py -3 verify_rvas.py` — the RVA/signature oracle (byte-checks each engine address against the PE).
+1. Write a byte-level RVA oracle (`pefile` + `capstone`; ours was `verify_rvas.py`, not published): map
+   each RVA through the PE section headers, disassemble there and compare with the expected instruction.
    Run it before trusting any address; it caught a genuine address bug that had cost a whole session.
 2. Import the exe into Ghidra and index the C dump with `gamedb`; generate the class-descriptor table
    (all classes with name/id/size/ctor) — the most reusable artifact.
@@ -145,9 +164,11 @@ body (the companion note wraps this up for the working ghost).
   declaring the assets made them render **normally** — i.e. the crowd system, not our value, chose the
   model.
 - **In-game, the cheat spawn:** pressing the debug "Dude" cheat ran clean, posted a valid event, and
-  produced **no body** — consistent with the single-occurrence type-id proof that no listener exists.
-- **Not verified:** that a *different* build (e.g. the MP client) has the Dude consumer, or any working
-  runtime character spawn (the evidence says it cannot be done in SP).
+  produced **no body** — consistent with no listener registered under the event's type id.
+- **Not verified:** that a *different* build (e.g. the MP client) has the Dude consumer; xrefs to the
+  `NavigationDudeEvent` descriptor (a listener that reads the id at runtime); firing a mission/domino
+  spawner, or the crowd system's own spawn call, from a plugin. No runtime spawn of a rendered character
+  worked, but those routes weren't tried, so whether SP can do it from a plugin is open.
 
 ## Gotchas
 
@@ -155,22 +176,25 @@ body (the companion note wraps this up for the working ghost).
    address — VA used where an RVA was required (`RVA = VA - 0x400000`). **Fix:** byte-verify every
    address against the PE with an oracle before installing a hook; keep one convention and test it once.
 2. **A spawned/edited NPC is invisible.** **Cause:** the node's model/child list (`+0x60`) is filled only
-   by the **loader** from a streamed descriptor; runtime-created nodes have an empty list. **Fix:** there
-   isn't one at runtime — use an existing (already streamed) character (the ghost-avatar route).
+   by the **loader** from a streamed descriptor; the nodes we created at runtime had an empty list.
+   **Fix:** none found at runtime. Use an existing (already streamed) character (the ghost-avatar route),
+   or see Open questions for getting a builder the loader has filled.
 3. **The loader reads your edited spawner character id but nothing changes.** **Cause:** crowd-life hosts
    take their model from the **crowd system**, which overrides the record's `DynamicReference` /
-   `ProgressionCharacterSelector`. **Fix:** don't retarget crowd hosts; only mission/domino spawners
-   honour a chosen character, and they are mission-gated.
+   `ProgressionCharacterSelector`. **Fix:** don't retarget crowd hosts; of the spawners we looked at,
+   only mission/domino spawners honour a chosen character, and they are mission-gated.
 4. **Touching a builder's member list makes the whole group of NPCs vanish.** **Cause:** the entity now
    references a builder whose appearance assets are **not declared** for that cell (a build failure).
    **Fix:** revert; and if you must declare assets, the per-cell dependency table is what the streamer
    uses (mission cells already list their characters; ordinary cells do not).
 5. **A "find-or-create" of a character id faults when you instantiate it.** **Cause:** it returns an
    **empty template**, not a populated builder; instantiating it null-dereferences in the builder's
-   member-list search. **Fix:** a populated builder only comes from the deserializer at load.
-6. **The debug/cheat "Spawn Dude" cheats appear to do nothing.** **Cause:** they post an event whose
-   listener is **not present** in the SP build (the type id appears once, in its own descriptor).
-   **Fix:** not flippable — the consumer is stripped.
+   member-list search. **Fix:** don't instantiate it; the only populated builders we saw came from the
+   deserializer at load.
+6. **The debug/cheat "Spawn Dude" cheats appear to do nothing.** **Cause:** they post an event that
+   nothing in the SP build is known to listen for (the type id appears once, in its own descriptor).
+   **Fix:** none found; don't build an avatar on them. Check xrefs to the event's descriptor before
+   ruling a listener out completely.
 7. **The "large actor factories" looked like character spawners.** **Cause:** they are often **event
    classes** (e.g. `ShipInfoEvent`), not pawns. **Fix:** resolve every factory's vtable → class
    descriptor name before assuming it builds an actor.
@@ -187,9 +211,12 @@ valuable artifact is the class-descriptor table and the RVA oracle.
 
 ## Open questions
 
-- Whether the MP client (`AC4BFMP.exe`) contains the Dude-event consumer (SP-stripped); if so, it could be
-  used as documentation of the intended path — not ported, since the SP engine cannot create a rendered
-  character anyway.
-- True model swap for the ghost body: the note `coop-ghost-avatar.md` records the remaining work (an
-  engine skin/morph path). That is the shortest route to an *assassin-looking* second character, on top of
-  the working driven body.
+- Spawning the way the engine does: fire a mission/domino spawner, or the crowd system's own spawn call,
+  from a plugin, with a builder the loader has already filled (for example in a mission cell whose
+  dependency table declares the character). This is the untried route to a rendered second character.
+- Xrefs to the `NavigationDudeEvent` descriptor, to rule out a listener that reads the type id at runtime.
+- Whether the MP client (`AC4BFMP.exe`) contains the Dude-event consumer; if so, it documents the intended
+  path (studied statically only, never run or injected).
+- True model swap for the ghost body: [coop-ghost-avatar.md](coop-ghost-avatar.md) records the remaining
+  work (an engine skin/morph path). That is the shortest route to an *assassin-looking* second character,
+  on top of the working driven body.
