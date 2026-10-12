@@ -2,22 +2,26 @@
 """
 unpack_upk.py — decompress a fully-compressed, LZO-compressed Unreal Engine 3 .upk.
 
-Many UE3 games ship "fully compressed" (LZO) packages that off-the-shelf tools refuse:
-UELib's package decompressor is a stub, and UPKUtils' DecompressLZO rejects some builds
-(e.g. Dishonored, build 801/30). This decodes them directly.
+Many UE3 games ship "fully compressed" (LZO) packages that some tools can't read:
+UELib's package decompressor is a stub, and UPKUtils' DecompressLZO only accepts XCOM and
+Batman package versions (Dishonored, build 801/30, is rejected). Gildor's decompress (from
+UE Viewer) is the community tool for these; this is a small Python fallback for LZO packages,
+meant for reading the result with UELib. Only LZO (CompressionFlags 2) is handled.
 
-Usage:
+Usage (minilzo is a C extension built from source, so it needs a C compiler):
     uv run --python 3.12 --with minilzo python unpack_upk.py <in.upk> <out.upk>
 
 Then, to read the contents with UELib, clear ONLY the CompressionFlags dword in the output
-(keep the chunk count/table) so UnrealPackage.Deserialize stops returning early:
+(keep the chunk count/table) so UnrealPackage.Deserialize stops returning early. Pass the
+output file and the CompressionFlags offset the script printed (0x79 in this example):
 
-    python - <<'PY'
+    python - DishonoredGame.fixed.upk 0x79 <<'PY'
     import struct,sys
-    p=sys.argv[1]; d=bytearray(open(p,'rb').read()); struct.pack_into('<I',d,OFF,0); open(p,'wb').write(d)
+    p=sys.argv[1]; off=int(sys.argv[2],0); d=bytearray(open(p,'rb').read())
+    struct.pack_into('<I',d,off,0); open(p,'wb').write(d)
     PY
 
-Format (verified on Dishonored build 801/30, image/offsets in the header):
+Format (verified on Dishonored build 801/30):
   summary @0:  tag 0x9E2A83C1, FileVersion(2), LicenseeVersion(2), HeaderSize(4), ...
                CompressionFlags(4), CompressedChunks count(4), chunk table[]
   chunk table: 16-byte records (UncompressedOffset, UncompressedSize, CompressedOffset, CompressedSize)
@@ -65,16 +69,19 @@ def find_chunk_table(d):
 
 
 def unpack(src, dst):
-    import minilzo
     d = open(src, 'rb').read()
     tag, ver, lic = struct.unpack_from('<IHH', d, 0)
     if tag != SRC_TAG:
         raise SystemExit('not a UE3 package (tag %08X)' % tag)
     off, count, recs = find_chunk_table(d)
     flags = struct.unpack_from('<I', d, off)[0]
+    if flags != 2:
+        raise SystemExit(f'CompressionFlags={flags}: only LZO (2) is handled here; '
+                         'use Gildor\'s decompress for zlib (1) or LZX (4) packages')
+    import minilzo
     total = recs[-1][0] + recs[-1][1]
-    print(f'version={ver}/{lic} compressionFlags={flags} chunks={count} table@0x{off+4:x} '
-          f'uncompressed={total}')
+    print(f'version={ver}/{lic} compressionFlags={flags}@0x{off:x} chunks={count} '
+          f'table@0x{off+8:x} uncompressed={total}')
     out = bytearray(total)
     first = recs[0][0]
     out[0:first] = d[0:first]                     # uncompressed summary/header region
