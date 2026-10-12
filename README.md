@@ -132,6 +132,8 @@ A few notes from the community:
     <tr><td><a href="skills/mashup-mods"><code>mashup-mods</code></a></td><td>Game inside a game: content ports, passthrough mods (worked example: Minecraft × GTA V), decomps as libraries, reimplementations</td></tr>
     <tr><td><a href="skills/publish-mod"><code>publish-mod</code></a></td><td>Lint, package per platform, credits, the post</td></tr>
     <tr><td><a href="skills/share-field-notes"><code>share-field-notes</code></a></td><td>Search the knowledge base, write your own note, open the PR</td></tr>
+    <tr><td><a href="skills/handoff"><code>handoff</code></a></td><td>Write the live session to one portable file so a fresh agent in another harness, directory or machine (or a forked side task) can continue it</td></tr>
+    <tr><td><a href="skills/psp-ports"><code>psp-ports</code></a></td><td>Make a game run on PSP: the hardware ceiling, the five routes (emulation, source port, decompilation, static recompilation, reimplementation), the pspdev toolchain and EBOOT.PBP, PPSSPP-then-hardware testing, and the no-ROMs/no-assets rules</td></tr>
   </tbody>
 </table>
 

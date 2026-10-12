@@ -61,6 +61,9 @@ Vineflower / CFR / Recaf. For Minecraft, use Loom `genSources` with Mojang mappi
 Use the community tool first:
 - Unity: UABEA, AssetRipper
 - Unreal: FModel, UAssetGUI
+  - **UE3 `.upk` that is fully LZO-compressed** (UELib's decompressor is a stub; UPKUtils may
+    reject the build): [references/ue3-packages/unpack_upk.py](references/ue3-packages/unpack_upk.py)
+    decodes it; then clear only the `CompressionFlags` dword so UELib reads it.
 - Bethesda: xEdit, BSArch
 - GameMaker: UndertaleModTool
 - Genie: genieutils
