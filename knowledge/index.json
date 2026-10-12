@@ -149,7 +149,7 @@
    "Ghidra 12.1.4",
    "Visual Studio 2022 (x86)"
   ],
-  "anti_cheat": "none in single-player; the co-op link is the plugin's own peer-to-peer UDP over a private VPN (Radmin), never Ubisoft's servers, Ubisoft Connect or AC4BFMP.exe",
+  "anti_cheat": "none in single-player; each player runs their own copy, and the co-op link is the plugin's own peer-to-peer UDP over a private VPN (Radmin), never through Ubisoft's servers or Ubisoft Connect; AC4BFMP.exe is never run",
   "status": "working",
   "agents": [
    "OpenCode (DeepSeek V4.1 Flash)"
