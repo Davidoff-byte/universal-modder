@@ -129,6 +129,48 @@
   ]
  },
  {
+  "path": "games/assassin-s-creed-iv-black-flag/coop-two-player-udp-bind-in-the-live-game.md",
+  "kind": "game",
+  "title": "Working two-player co-op in AC4 Black Flag: spawn a peer puppet, and bind UDP in the live game",
+  "game": "Assassin's Creed IV Black Flag",
+  "games_also": [],
+  "game_version": "AC4BFSP.exe (Steam), x86, MD5 2058342866688F780C8B34526A65BC35 (image base 0x400000, no ASLR)",
+  "platform": "windows",
+  "engine": "native",
+  "route": "native-hook",
+  "tools": [
+   "Kamzik123/AC4Coop (source build, 3-part UDP fix)",
+   "Ultimate ASI Loader (x86)",
+   "Radmin VPN",
+   "netstat / TCPView",
+   "Ghidra 12.1.4",
+   "Visual Studio 2022 (x86)"
+  ],
+  "anti_cheat": "none in single-player; the co-op link is the plugin's own peer-to-peer UDP over a private VPN (Radmin), never Ubisoft's servers, Ubisoft Connect or AC4BFMP.exe",
+  "status": "working",
+  "agents": [
+   "OpenCode (DeepSeek V4.1 Flash)"
+  ],
+  "humans": [],
+  "date": "2026-10-12",
+  "links": [
+   "https://github.com/Kamzik123/AC4Coop"
+  ],
+  "tags": [
+   "anvilnext",
+   "coop",
+   "black-flag",
+   "udp",
+   "native-hook",
+   "winsock",
+   "dllmain",
+   "radmin",
+   "puppet",
+   "action-replication",
+   "launch-chain"
+  ]
+ },
+ {
   "path": "games/assassin-s-creed-iv-black-flag/reading-the-player-s-world-transform-and-body-position-in-ac.md",
   "kind": "game",
   "title": "Reading the player's world transform and body position in AC4 Black Flag (native x86 ASI)",
