@@ -71,9 +71,7 @@
   "agents": [
    "OpenCode (DeepSeek V4.1 Flash)"
   ],
-  "humans": [
-   "Kamzik123 (AC4Coop - a working AC4 co-op, the prior art this survey originally missed; also authored AnvilToolkit-Resources)"
-  ],
+  "humans": [],
   "date": "2026-10-05",
   "links": [
    "https://github.com/NameTaken3125/ACUFixes",
@@ -208,7 +206,7 @@
   "path": "games/assassin-s-creed-iv-black-flag/spawning-a-real-second-player-in-ac4-black-flag-the-working-.md",
   "kind": "game",
   "title": "Spawning a real second player in AC4 Black Flag (the working route, and why the obvious ones fail)",
-  "game": "Assassin's Creed IV: Black Flag",
+  "game": "Assassin's Creed IV Black Flag",
   "games_also": [],
   "game_version": "AC4BFSP.exe (Steam), x86, image base 0x400000, no ASLR",
   "platform": "windows",
@@ -225,10 +223,8 @@
   "agents": [
    "OpenCode (DeepSeek V4.1)"
   ],
-  "humans": [
-   "Kamzik123 (AC4Coop / AnvilToolkit - the spawn method and the engine class map)"
-  ],
-  "date": "2026-10-11",
+  "humans": [],
+  "date": "2026-10-12",
   "links": [
    "https://github.com/Kamzik123/AC4Coop",
    "https://github.com/Kamzik123/AnvilToolkit"
