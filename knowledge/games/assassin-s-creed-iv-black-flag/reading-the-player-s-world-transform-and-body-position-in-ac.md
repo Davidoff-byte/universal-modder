@@ -22,7 +22,8 @@ tags: [anvilnext, black-flag, native-hook, x86, transform, camera, reverse-engin
 > Goal: a co-op replication layer for AC4 Black Flag — two players in one world. This note covers the
 > part that is **verified working**: a 32-bit ASI plugin that loads into the single-player exe and
 > reads the player's live world transform, plus the camera→target→**player body** chain found by a
-> runtime probe. The avatar (a second, drivable character) is still open.
+> runtime probe. **Update (2026-10-12): the avatar (a second, drivable character) is no longer the open
+> gate** — a rendered second player body *can* be spawned; see the pointer in Verification.
 
 ## Setup
 - **Game:** Assassin's Creed IV Black Flag, Steam (appid 242050), single-player exe **`AC4BFSP.exe`**
@@ -84,8 +85,15 @@ as `mov ecx,[0x02abe588]`). Its transform ring works like Rogue's:
   - walking straight: the offset `candidate − camera` is **rock stable** at `(-0.3, -2.8, -0.6)`;
   - turning: the offset **rotates in the XY plane** (`(-0.3,-2.8) → (2.5,0) → (0.5,+2.3)`) — the
     camera orbits a **fixed world point**, which is the player's body.
-- **NOT verified:** a second, drivable character (the co-op gate); anything to do with the
-  multiplayer exe (`AC4BFMP.exe` was only string/reversed as a design reference, never run online).
+- **NOT verified here:** anything to do with the multiplayer exe (`AC4BFMP.exe` was only
+  string/reversed as a design reference, never run online).
+- **Answered elsewhere (2026-10-11/12) — a second, drivable character.** This was the "co-op gate":
+  it is **solvable**. Build the body from the **local player's own cached `EntityBuilder`**
+  (`EntityBuilder::BuildEntityWithSelector` → `World::AddEntity`, plus the `GetUnusedPadID` hook) —
+  method by **Kamzik123**, [`AC4Coop`](https://github.com/Kamzik123/AC4Coop); verified live ("two
+  Edwards"). Full route and the near-miss dead ends:
+  [`spawning-a-real-second-player-in-ac4-black-flag-the-working-.md`](spawning-a-real-second-player-in-ac4-black-flag-the-working-.md);
+  the crowd-body alternative is in [`coop-ghost-avatar.md`](coop-ghost-avatar.md).
 
 ## Gotchas
 1. **32-bit, always.** `AC4BFSP.exe` is x86 — the ASI loader, the plugin, and every address
@@ -117,7 +125,13 @@ cheap once the addresses are pinned.
 ## Open questions
 - Which **class** is the camera target object (the one holding the player body position at `+0x50`)?
   Next step: dump its vtable at runtime and identify it in Ghidra.
-- How to obtain a **second, drivable character** — the co-op gate. The BL MP exe's `NetPlayer`
-  field-replication offsets (`0x80/0xe8/0x128/0x1f8/0x170`, move-mode `+0x398`) are the design
-  reference.
+- ~~How to obtain a **second, drivable character** — the co-op gate.~~ **Answered (2026-10-11/12):**
+  spawn it from the player's own cached `EntityBuilder` (`EntityBuilder::BuildEntityWithSelector` →
+  `World::AddEntity`, + the `GetUnusedPadID` hook) — see
+  [`spawning-a-real-second-player-in-ac4-black-flag-the-working-.md`](spawning-a-real-second-player-in-ac4-black-flag-the-working-.md);
+  **method by Kamzik123** ([`AC4Coop`](https://github.com/Kamzik123/AC4Coop)). The BL MP exe's
+  `NetPlayer` field-replication offsets (`0x80/0xe8/0x128/0x1f8/0x170`, move-mode `+0x398`) remain the
+  design reference for *replicating* a body once it exists. **Still open:** the animation route — bone
+  mirroring glides when the spawned body has no walk children (`c14+0x134 == 0`); use action
+  replication (`SetTargetAction` + blend tree). See the 2026-10-12 update in the working-route note.
 - Cross-machine entity identity (64-bit entity ids appear in BF's debug strings).

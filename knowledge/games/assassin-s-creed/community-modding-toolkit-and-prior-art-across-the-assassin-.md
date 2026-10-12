@@ -7,17 +7,19 @@ game_version: 'family-wide survey (2026-10); per-title versions noted inline'
 platform: windows
 engine: native
 route: native-hook
-tools: ["ACUFixes (NameTaken3125)", "ACExplorer (gentlegiantJGC)", "AnvilToolkit (+ Kamzik123 resources)", "ScriptEngine (LionAG)", "Ghidra", "gamedb"]
+tools: ["ACUFixes (NameTaken3125)", "ACExplorer (gentlegiantJGC)", "AnvilToolkit (+ Kamzik123 resources)", "AC4Coop (Kamzik123)", "ScriptEngine (LionAG)", "Ghidra", "gamedb"]
 anti_cheat: none on the single-player titles; do not mod online/multiplayer clients
 status: in-progress
 agents:
 - OpenCode (DeepSeek V4.1 Flash)
-humans: []
+humans:
+- Kamzik123 (AC4Coop - a working AC4 co-op, the prior art this survey originally missed; also authored AnvilToolkit-Resources)
 date: '2026-10-05'
 links:
 - https://github.com/NameTaken3125/ACUFixes
 - https://github.com/gentlegiantJGC/ACExplorer
 - https://github.com/Kamzik123/AnvilToolkit-Resources
+- https://github.com/Kamzik123/AC4Coop
 - https://github.com/LionAG/ScriptEngine
 - https://github.com/bloxtbc/SubtitleSynchAC1
 tags: [assassins-creed, anvil, anvilnext, modding-tools, prior-art, survey, co-op]
@@ -26,8 +28,9 @@ tags: [assassins-creed, anvil, anvilnext, modding-tools, prior-art, survey, co-o
 
 > A survey of the public modding ecosystem for the Assassin's Creed family, gathered before starting
 > a hard project (a co-op replication layer for AC Rogue). The headline: **the tools exist and are
-> strongest for AC Unity and AC4/Rogue, but no public co-op mod exists for any AC game.** Use this to
-> pick a title and a toolkit instead of rediscovering the landscape.
+> strongest for AC Unity and AC4/Rogue** — and, **corrected 2026-10-12, a working public co-op mod
+> does exist**: **Kamzik123's [`AC4Coop`](https://github.com/Kamzik123/AC4Coop)** for AC4 Black Flag.
+> Use this to pick a title and a toolkit instead of rediscovering the landscape.
 
 ## Setup
 - **Engine lineage:** AC1 (2007) is the original **Anvil ("Scimitar")**, 32-bit, DX9/10. From AC2
@@ -65,6 +68,14 @@ tags: [assassins-creed, anvil, anvilnext, modding-tools, prior-art, survey, co-o
 - **ScriptEngine** (`LionAG/ScriptEngine` + AC4 and Rogue camera tools): a native scripting engine
   (`.scrx`) that already controls the **camera** and the **world clock** (world stop, slow motion,
   time of day), plus DoF/FOV/HUD — on both Black Flag (UC 1.07) and Rogue (UC 1.1.0).
+- **AC4Coop** (`Kamzik123/AC4Coop`): a **working single-player co-op for AC4 Black Flag** — the one
+  piece of prior art this survey originally missed. It spawns a second, fully-rendered player body
+  from the **local player's own cached `EntityBuilder`** (`PlayerProgression` →
+  `EntityBuilder::BuildEntityWithSelector` → `World::AddEntity`, plus a
+  `PlayerPadManager::GetUnusedPadID` hook so the second body does not steal the player's pad) and
+  replicates **actions** rather than bones (the engine's `SimpleAnimBlender<46>` blend tree). Its
+  `src/Scimitar/` headers are reversed engine classes with real field offsets. **Study it before
+  writing a spawn path from scratch.**
 - **AC1**: essentially nothing public beyond a subtitle tool (`bloxtbc/SubtitleSynchAC1`).
 
 ## Build steps
@@ -75,16 +86,26 @@ There is no single "install this and mod everything". Choose per goal:
 - **AC4/Rogue runtime control:** ScriptEngine loader + `.scrx` scripts placed in the game root.
 
 ## Verification
-- **Verified this pass:** the repos exist, are public, and their READMEs describe the above (read
-  directly). Star counts and last-updated dates as of 2026-10.
+- **Verified this pass (2026-10-05):** the repos exist, are public, and their READMEs describe the
+  above (read directly). Star counts and last-updated dates as of 2026-10.
 - **NOT verified:** I did not build, install or run any of these tools. The `.scrx` scripts are
   binary, so the ScriptEngine *API surface* (does it expose entities/positions, or only camera/time?)
   is **unconfirmed** — that is the single most valuable thing to check next.
-- **Explicitly absent:** no public **co-op** mod for any AC game (searched GitHub; only trainers/junk).
+- **Corrected 2026-10-12 — the "explicitly absent" claim below was wrong.** The earlier search found
+  no co-op mod, but **Kamzik123's [`AC4Coop`](https://github.com/Kamzik123/AC4Coop)** is a working AC4
+  Black Flag single-player co-op (cached-builder spawn + action replication) — a keyword search for
+  "co-op" simply never surfaced it. What is still true: coverage is thin. Beyond AC4Coop there is no
+  mature co-op *framework* for the family, and nothing public for AC1 or Rogue.
+- **~~Explicitly absent:~~ no public co-op mod for any AC game** *(searched GitHub 2026-10-05; only
+  trainers/junk at the time — retracted 2026-10-12, see above)*.
 
 ## Gotchas
-1. **Assume no co-op prior art.** Searches for "AC co-op / multiplayer mod / Black Flag coop" return
-   nothing real. You are on your own; budget accordingly.
+1. **Do NOT assume there is no co-op prior art — there is.** The old wording here was "assume no co-op
+   prior art… you are on your own", and that cost us time. **Kamzik123's
+   [`AC4Coop`](https://github.com/Kamzik123/AC4Coop)** is a working AC4 Black Flag co-op
+   (cached-builder spawn + action replication): study and credit it before writing a spawn path from
+   scratch. **Lesson:** search GitHub **by author and repo**, not only by keyword — a repo whose
+   description never says "co-op" will not appear in a "co-op mod" search.
 2. **The best "oracle" for a networked avatar is a shipped MP exe.** Black Flag (`AC4BFMP.exe`) and AC3
    have one; AC1 and Rogue do not. Don't start a replication project on a title with no netcode to copy.
 3. **Version pinning is everything.** ACUFixes is for AC Unity **1.5.0**; the ScriptEngine camera tools
@@ -105,5 +126,10 @@ One session (GitHub survey + README reads).
 - What does the **ScriptEngine `.scrx` API** actually expose — camera/time only, or entities and
   transforms? If the latter, it is a big shortcut for AC4/Rogue native mods.
 - Does **ACUFixes' ACU-RE** library expose entity/transform access usable for a replication layer?
-- Is there a clean way to spawn/drive a **second character** in any AnvilNext title (the open gate in
-  our AC Rogue co-op work)?
+- ~~Is there a clean way to spawn/drive a **second character** in any AnvilNext title (the open gate in
+  our AC Rogue co-op work)?~~ **Answered for AC4 Black Flag (2026-10-11/12):** yes — spawn from the
+  player's own cached `EntityBuilder`; **method by Kamzik123**
+  ([`AC4Coop`](https://github.com/Kamzik123/AC4Coop)), written up in
+  [`spawning-a-real-second-player-in-ac4-black-flag-the-working-.md`](../assassin-s-creed-iv-black-flag/spawning-a-real-second-player-in-ac4-black-flag-the-working-.md).
+  **Still open:** whether the same route ports to **Rogue** (same engine, minus the MP binary) — nobody
+  has published that.

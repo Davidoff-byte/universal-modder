@@ -122,6 +122,11 @@ Key points:
 6. **The builder is often released.** `reloaded=0` on one load, `=1` on another — handle both (reload by
    id when the object isn't readable).
 7. **`+0xAC == 0` on a clone is not "missing graphic".** It's a flag word; the real gate is `+0xB0`.
+8. **A spawned body that "glides" has no walk children.** The spawned body's character node reads
+   `c14+0x134 == 0` (a null walk-child pointer), so a per-frame bone mirror writes to nothing — the
+   body translates but the legs never cycle. **Fix:** drive a body that actually carries a skeleton
+   (the crowd-hijack or `mod16` source), or stop mirroring bones and replicate **actions**
+   (`SetTargetAction` + blend tree) instead.
 
 ## Assets
 
@@ -139,3 +144,47 @@ None — no game files or extracted assets are shipped. Everything is code + add
   note supersedes it for the *body source*.
 - `why-ac4-black-flag-sp-cannot-spawn-a-new-character-...md` — **superseded on its conclusion** (see the
   dated correction there).
+
+---
+
+## Update 2026-10-12 — the body spawns, but it has no walk skeleton; animate by action replication
+
+The spawn above is real, but a fresh spawned body is **not** animation-complete on its own, and that is
+where the "it glides" reports come from.
+
+- **The spawned body has no walk-child skeleton.** On the body we built, the character node's
+  walk-child pointer reads **`c14+0x134 == 0`** (null). With no walk children there is nothing for a
+  bone-mirror to write to, so a per-frame bone copy is a *silent no-op*: the body's world matrix moves
+  (it follows your position) but the legs never cycle, so it slides/glides instead of walking.
+  **Symptom → cause → fix:** gliding body → `c14+0x134 == 0`, no walk children → use a body that *has*
+  a skeleton, or stop mirroring bones and replicate actions instead.
+- **The crowd body is the source that *does* animate this way.** The hijack route in
+  [`coop-ghost-avatar.md`](coop-ghost-avatar.md) drives a crowd character, which *does* have a
+  skeleton, so the mirror visibly animates it. The same held for the **`mod16` forge** body we tried:
+  it renders **and** animates through the mirror, because it carries walk children. So "spawn from the
+  cached builder" and "get a rig that animates" are two separate problems — the cached builder gets you
+  the *identity* (a real Edward), while the crowd/`mod16` source gets you the *skeleton*.
+- **The correct animation route is action replication, not bone writes.** Instead of copying bone
+  transforms, drive the body's **action** and let the engine's own blend tree interpolate:
+  `SetTargetAction` picks the action, `ActivateCharacterActionSet` makes the action set live, the
+  `SimpleAnimBlender<46>` blend tree blends it over time, and `GetCurrentAction` /
+  `SetCurrentActionRatio` read and seek the blend phase. That is exactly what the reference does, and
+  it is why the reference looks right where a bone mirror looks like sliding. Addresses we recorded
+  (x86, image base `0x400000`, **absolute VAs** — subtract `0x400000` for an RVA):
+
+  | What | VA |
+  |---|---|
+  | per-frame hook point | `0x12FAACD` |
+  | `SetTargetAction` | `0x6625D0` |
+  | `GetCurrentAction` | `0x666C80` |
+  | `SetCurrentActionRatio` | `0x652640` |
+  | `ActivateCharacterActionSet` | `0x651840` |
+
+  plus the `SimpleAnimBlender<46>` blend tree the actions feed into. **The method is Kamzik123's**
+  (`AC4Coop`) — action replication is his approach and the mature one.
+- **Verified vs not, honestly.** Verified live (2026-10-11/12): the cached-builder spawn renders a
+  second Edward; the spawned body's walk-child pointer is null (`c14+0x134 == 0`); the crowd-hijack body
+  and the `mod16` forge body both render **and** animate through the bone mirror. **Not verified by
+  us:** end-to-end action replication on the spawned body — the addresses above are *recorded*, not
+  successfully driven from here, and it is unconfirmed whether `SetTargetAction` alone suffices or
+  `ActivateCharacterActionSet` must be called first. Treat the table as a starting point, not a recipe.

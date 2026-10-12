@@ -223,7 +223,7 @@ valuable artifact is the class-descriptor table and the RVA oracle.
 
 ---
 
-## See also (2026-10-11) — a working route
+## See also (2026-10-11) â€” a working route
 
 A rendered second player character **is** achievable; see
 **`spawning-a-real-second-player-in-ac4-black-flag-the-working-.md`** (method by **Kamzik123**,
