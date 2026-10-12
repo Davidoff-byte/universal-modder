@@ -24,15 +24,10 @@ tags: ["anvilnext", "coop", "avatar", "transform", "wow64-debugging", "hardware-
 > and drove it from UDP packets so a second "player" visibly walks where the peer walks.
 > Verified in-game: a fake peer script made an NPC circle the player, and the NPC
 > returned to its own AI when the packets stopped.
-
-> **Status update (2026-10-12):** the claim below that "the avatar is NOT spawned" has been
-> **corrected** — a second body *can* be spawned from the local player's own cached `EntityBuilder`
-> (method by **Kamzik123**, [`AC4Coop`](https://github.com/Kamzik123/AC4Coop); verified live —
-> "two Edwards", 2026-10-11). What this note describes — **hijacking a crowd body** — is a valid
-> **alternative** body source, not the only option, and it has the advantage that a crowd body
-> carries a skeleton the bone-mirror can drive. For **animation**, the correct route is **action
-> replication** (`SetTargetAction` + blend tree), not bone writes. See
-> [`spawning-a-real-second-player-in-ac4-black-flag-the-working-.md`](spawning-a-real-second-player-in-ac4-black-flag-the-working-.md).
+>
+> A rendered second body can also be spawned instead of hijacked: build it from the local player's own
+> cached `EntityBuilder` (Kamzik123's [AC4Coop](https://github.com/Kamzik123/AC4Coop) route). The
+> [spawn-route note](spawning-a-real-second-player-in-ac4-black-flag-the-working-.md) has it.
 
 ## Setup
 
@@ -47,23 +42,19 @@ tags: ["anvilnext", "coop", "avatar", "transform", "wow64-debugging", "hardware-
 
 - Chose `native-hook` + fixed addresses over pattern scanning: single pinned build, and
   all addresses are re-resolved live anyway (heap objects move per session).
-- **Correction (2026-10-12):** this note originally claimed "the avatar is NOT spawned" and that
-  "the game has no reachable spawn/duplicate path from a plugin". **That is wrong.** A rendered second
-  body **can** be spawned from the **local player's own cached `EntityBuilder`**
-  (`PlayerProgression` → `EntityBuilder::BuildEntityWithSelector` → `World::AddEntity`, plus the
-  `PlayerPadManager::GetUnusedPadID` hook so the second body does not steal the player's pad) —
-  **method credit: Kamzik123, [`Kamzik123/AC4Coop`](https://github.com/Kamzik123/AC4Coop)**; verified
-  live ("two Edwards", 2026-10-11). The full route, addresses and the near-miss dead ends are in
-  [`spawning-a-real-second-player-in-ac4-black-flag-the-working-.md`](spawning-a-real-second-player-in-ac4-black-flag-the-working-.md).
-- What remains true here is that the **hijacked crowd character** is a valid **alternative** body
-  source — an ordinary crowd body already has a skeleton, so a bone-mirror animates it. It is one
-  option among two, not the only one. The
-  [spawn note](spawning-a-new-character-in-ac4-black-flag-single-player-dea.md) records the spawn
-  paths that genuinely fail and why; those negative results still hold.
-- **Animation:** the best route is **action replication** (`SetTargetAction` + the
-  `SimpleAnimBlender<46>` blend tree) rather than writing bone transforms — a spawned body can have a
-  null walk-child pointer (`c14+0x134 == 0`) and then a bone-mirror is a silent no-op. See the
-  2026-10-12 update in the working-route note.
+- The avatar here is not spawned: it's a *hijacked crowd character* whose transform is overwritten
+  each frame. A rendered second body can also be spawned, from the local player's own cached
+  `EntityBuilder` (`PlayerProgression` → `EntityBuilder::BuildEntityWithSelector` →
+  `World::AddEntity`, plus a `PlayerPadManager::GetUnusedPadID` hook so it doesn't take the player's
+  pad). That route is Kamzik123's ([AC4Coop](https://github.com/Kamzik123/AC4Coop)) and was verified
+  live on 2026-10-11 (two Edwards on the Havana dock); the
+  [spawn-route note](spawning-a-real-second-player-in-ac4-black-flag-the-working-.md) has the steps.
+  The [dead-ends note](spawning-a-new-character-in-ac4-black-flag-single-player-dea.md) records the
+  spawn paths that didn't work.
+- A crowd body is still a usable body source: it already carries a walk skeleton, so mirroring bones
+  animates it. A body spawned from the cached builder has no walk children (`c14+0x134 == 0`), so a
+  bone mirror does nothing there; AC4Coop animates its puppet by action replication (`SetTargetAction`
+  and the `SimpleAnimBlender<46>` blend tree) instead.
 - Networking is the plugin's own: each copy of AC4BFSP.exe sends and receives 72-byte pose packets over UDP,
   peer to peer (tested over Radmin VPN between two PCs). Nothing goes through Ubisoft Connect, Ubisoft's servers
   or AC4BFMP.exe.
@@ -173,20 +164,19 @@ picker, plugin write path, and a working loopback demo.
   SP only has outfits *for the player*. The runtime character-model swap exists in the
   engine but in `AC4BFMP.exe` (`CharacterSkinsComponent`, `ActionSwapSkin`, `HIJACK_SKIN`,
   morph events). Next step: port that apply-skin path, or call SP's graphic factory
-  (table-registry driven) for a puppet with the protagonist's definition.
-- Animation/parkour event replication is next (the two-machine link is done — see Oracle 4). **Partly
-  answered (2026-10-12):** the route is **action replication** — `SetTargetAction` +
-  `ActivateCharacterActionSet` + the `SimpleAnimBlender<46>` blend tree — *not* per-bone writes (a
-  spawned body can have `c14+0x134 == 0`, no walk children, so a bone map writes nothing). See the
-  2026-10-12 update in
-  [`spawning-a-real-second-player-in-ac4-black-flag-the-working-.md`](spawning-a-real-second-player-in-ac4-black-flag-the-working-.md).
+  (table-registry driven) for a puppet with the protagonist's definition. Spawning from the
+  player's cached builder (spawn-route note) gives a second Edward directly, so it sidesteps the skin
+  swap for a protagonist-looking body.
+- Animation/parkour event replication is next (the two-machine link is done — see Oracle 4). AC4Coop
+  does it by action replication (`SetTargetAction`, `ActivateCharacterActionSet` and the
+  `SimpleAnimBlender<46>` blend tree) rather than per-bone writes; see the
+  [spawn-route note](spawning-a-real-second-player-in-ac4-black-flag-the-working-.md).
 
-## See also (2026-10-12)
+## See also
 
-- [`spawning-a-real-second-player-in-ac4-black-flag-the-working-.md`](spawning-a-real-second-player-in-ac4-black-flag-the-working-.md)
-  — **the working spawn route** (build a real player body from the player's own cached `EntityBuilder`;
-  **method by Kamzik123**, [`AC4Coop`](https://github.com/Kamzik123/AC4Coop)), plus the animation
-  correction (action replication over bone mirroring). That note supersedes this one for the *body
-  source*; this note's transform/write findings and its crowd-body route remain valid.
-- [`spawning-a-new-character-in-ac4-black-flag-single-player-dea.md`](spawning-a-new-character-in-ac4-black-flag-single-player-dea.md)
-  — the routes that genuinely fail (negative results, still correct).
+- [Spawn-route note](spawning-a-real-second-player-in-ac4-black-flag-the-working-.md): a real second
+  player body built from the player's cached `EntityBuilder` (Kamzik123's
+  [AC4Coop](https://github.com/Kamzik123/AC4Coop) method), and what we learned about animating it.
+  This note's transform findings and crowd-body route still hold.
+- [Dead-ends note](spawning-a-new-character-in-ac4-black-flag-single-player-dea.md): the spawn routes
+  that didn't work, and the engine's spawn system.
