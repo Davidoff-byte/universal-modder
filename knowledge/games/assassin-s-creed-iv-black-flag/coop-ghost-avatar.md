@@ -132,7 +132,10 @@ yaw by rewriting matrix rows 0/1 as a Z-rotation from the peer's quaternion.
    actually changes before sampling.
 7. **Kernel-held UDP ports.** Some crashed sessions leave a dead process still owning the
    bound UDP port (bind fails with 10048 even after the process is gone). **Fix:** use a
-   fresh local port per session, or reboot — worth doing before any two-machine test.
+   fresh local port per session, or reboot — worth doing before any two-machine test. If the
+   plugin opens its socket in `DllMain`, a process from AC4's launch chain can be the owner:
+   gotchas 1-2 of the [co-op note](coop-two-player-udp-bind-in-the-live-game.md) have the cause
+   and the fix (open the socket on the first in-world frame).
 8. **PowerShell name collisions broke our scripts repeatedly**: `rd`, `rp`, `rm`, `dir` are
    aliases; short helper names must be avoided in Windows-focused tooling.
 
